@@ -2,257 +2,1205 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>נוהל הפעלת רחפן EVO</title>
-
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&display=swap');
 
-:root {
-  --bg: #ffffff;
-  --surface: #f8f9fb;
-  --border: #e5e7eb;
-  --accent: #2563eb;
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-}
+  :root {
+    --bg: #ffffff;
+    --surface: #f7f8fa;
+    --surface2: #eef0f4;
+    --border: #e2e5eb;
+    --accent: #e85d04;
+    --accent2: #f48c06;
+    --text-primary: #1a1d23;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --scan: #0284c7;
+    --build: #7c3aed;
+    --safety: #dc2626;
+    --intel: #059669;
+    --appendix: #0ea5e9;
+    --fault: #d97706;
+  }
 
-/* בסיס */
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family:'Heebo',sans-serif;
-  background:var(--bg);
-  color:var(--text-primary);
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-/* מסכים */
-.screen { display:none; min-height:100vh; }
-.screen.active { display:flex; flex-direction:column; }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    font-family: 'Heebo', sans-serif;
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
 
-/* כותרת */
-.home-header {
-  padding:40px 20px 20px;
-}
+  /* ===== SCREENS ===== */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    animation: fadeIn 0.3s ease;
+  }
+  .screen.active { display: flex; flex-direction: column; }
 
-.home-title {
-  font-size:32px;
-  font-weight:900;
-}
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-.home-subtitle {
-  font-size:15px;
-  color:var(--text-secondary);
-  margin-top:6px;
-}
+  /* ===== HOME SCREEN ===== */
+  #home {
+    background: var(--bg);
+  }
 
-/* רחפן (פשוט בלי אנימציה) */
-.drone-visual {
-  text-align:center;
-  font-size:50px;
-  margin:10px 0 20px;
-}
+  .home-header {
+    position: relative;
+    padding: 48px 24px 28px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(160deg, #fff8f4 0%, #ffffff 60%);
+  }
 
-/* קטגוריות */
-.categories {
-  padding:0 16px 30px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
+  .home-header::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
 
-.cat-btn {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:18px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  font-size:17px;
-  cursor:pointer;
-}
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(232,93,4,0.1);
+    border: 1px solid rgba(232,93,4,0.25);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
 
-/* מסך תוכן */
-.content-header {
-  position:sticky;
-  top:0;
-  background:white;
-  border-bottom:1px solid var(--border);
-  padding:14px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
 
-.back-btn {
-  font-size:22px;
-  background:none;
-  border:none;
-  cursor:pointer;
-}
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
 
-.content-body {
-  padding:20px;
-}
+  .home-title {
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
 
-/* Accordion */
-.accordion-item {
-  border:1px solid var(--border);
-  border-radius:12px;
-  margin-bottom:12px;
-  overflow:hidden;
-}
+  .home-title span {
+    color: var(--accent);
+  }
 
-.accordion-header {
-  padding:16px;
-  background:var(--surface);
-  cursor:pointer;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:700;
-}
+  .home-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
 
-.accordion-arrow {
-  transition:0.3s;
-}
+  /* ===== DRONE VISUAL — simple SVG drone icon, no animation ===== */
+  .drone-visual {
+    width: 100%;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #fff8f4 0%, #ffffff 100%);
+    border-bottom: 1px solid var(--border);
+  }
 
-.accordion-item.active .accordion-arrow {
-  transform:rotate(90deg);
-}
+  .drone-svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.85;
+  }
 
-.accordion-content {
-  max-height:0;
-  overflow:hidden;
-  transition:max-height 0.3s ease;
-  padding:0 16px;
-}
+  /* ===== CATEGORY GRID ===== */
+  .categories {
+    padding: 20px 16px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-.accordion-item.active .accordion-content {
-  max-height:500px;
-  padding:16px;
-}
+  .cat-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 17px 18px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-align: right;
+    position: relative;
+    overflow: hidden;
+  }
 
-/* טקסט */
-p, li {
-  font-size:15px;
-  line-height:1.8;
-  color:#374151;
-}
+  .cat-btn::before {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 0 14px 14px 0;
+    background: var(--cat-color, var(--accent));
+  }
 
-/* כפתור תחתון */
-.bottom-back {
-  padding:16px;
-}
+  .cat-btn:active {
+    transform: scale(0.98);
+    background: var(--surface2);
+  }
 
-.bottom-back button {
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:12px;
-  background:var(--accent);
-  color:white;
-  font-size:16px;
-}
+  .cat-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    background: rgba(0,0,0,0.04);
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
 
+  .cat-info { flex: 1; }
+
+  .cat-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+  }
+
+  .cat-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .cat-arrow {
+    color: var(--text-muted);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ===== CONTENT SCREEN ===== */
+  #content {
+    background: var(--bg);
+  }
+
+  .content-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .back-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    color: var(--text-primary);
+  }
+
+  .back-btn:active { background: var(--surface2); transform: scale(0.95); }
+
+  .content-header-info { flex: 1; }
+
+  .content-header-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .content-header-cat {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .content-icon-header {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  /* ===== CONTENT BODY ===== */
+  .content-body {
+    padding: 24px 18px 60px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .section-block {
+    margin-bottom: 28px;
+    animation: slideUp 0.4s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 4px; height: 18px;
+    background: var(--cat-color, var(--accent));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .content-text {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .info-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .info-card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 6px;
+  }
+
+  .info-card p:last-child { margin-bottom: 0; }
+
+  .warning-card {
+    background: rgba(220,38,38,0.06);
+    border: 1px solid rgba(220,38,38,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .warning-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+  .warning-text {
+    font-size: 14px;
+    color: #b91c1c;
+    line-height: 1.7;
+    font-weight: 500;
+  }
+
+  .step-list { list-style: none; padding: 0; }
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .step-item:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 26px; height: 26px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .bullet-list { list-style: none; padding: 0; }
+
+  .bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    border-bottom: 1px solid rgba(226,229,235,0.6);
+  }
+
+  .bullet-item:last-child { border-bottom: none; }
+
+  .bullet-dot {
+    width: 7px; height: 7px;
+    background: var(--cat-color, var(--accent));
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 9px;
+  }
+
+  .phone-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .phone-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .phone-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .phone-number {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--scan);
+    direction: ltr;
+    letter-spacing: 0.02em;
+  }
+
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .spec-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .spec-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .spec-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .fault-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .fault-header {
+    padding: 14px 16px;
+    background: rgba(217,119,6,0.07);
+    border-bottom: 1px solid rgba(217,119,6,0.15);
+    font-size: 15px;
+    font-weight: 700;
+    color: #b45309;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fault-body { padding: 14px 16px; }
+
+  .fault-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  .fault-section-title:first-child { margin-top: 0; }
+
+  .fault-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  .equipment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .equip-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .equip-dot {
+    width: 8px; height: 8px;
+    background: var(--appendix);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== ACCORDION ===== */
+  .accordion-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 18px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--surface);
+    user-select: none;
+    gap: 10px;
+    transition: background 0.15s;
+  }
+
+  .accordion-header:active {
+    background: var(--surface2);
+  }
+
+  .accordion-arrow {
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .accordion-item.open .accordion-arrow {
+    transform: rotate(90deg);
+  }
+
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.25s ease;
+    padding: 0 16px;
+  }
+
+  .accordion-item.open .accordion-body {
+    max-height: 2000px;
+    padding: 0 16px 16px;
+  }
+
+  .accordion-title-text {
+    flex: 1;
+  }
+
+  /* ===== BOTTOM BACK ===== */
+  .bottom-back {
+    padding: 14px 18px 30px;
+    border-top: 1px solid var(--border);
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    bottom: 0;
+  }
+
+  .bottom-back-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text-primary);
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .bottom-back-btn:active { background: var(--surface2); transform: scale(0.98); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 </style>
 </head>
-
 <body>
 
-<!-- HOME -->
+<!-- ============================================================
+     HOME SCREEN
+============================================================ -->
 <div id="home" class="screen active">
   <div class="home-header">
-    <h1 class="home-title">נוהל הפעלת רחפן EVO</h1>
-    <p class="home-subtitle">מדריך מבצעי</p>
+    <div class="badge"><div class="badge-dot"></div> מרץ 2026</div>
+    <h1 class="home-title">נוהל הפעלת רחפן <span>EVO</span></h1>
+    <p class="home-subtitle">EVO Max 4T/N — מדריך מבצעי מלא</p>
   </div>
 
-  <div class="drone-visual">🛸</div>
+  <!-- Simple drone SVG icon, no complex animation -->
+  <div class="drone-visual">
+    <svg class="drone-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- arms -->
+      <line x1="28" y1="38" x2="14" y2="24" stroke="#e85d04" stroke-width="3" stroke-linecap="round"/>
+      <line x1="72" y1="38" x2="86" y2="24" stroke="#e85d04" stroke-width="3" stroke-linecap="round"/>
+      <line x1="28" y1="62" x2="14" y2="76" stroke="#e85d04" stroke-width="3" stroke-linecap="round"/>
+      <line x1="72" y1="62" x2="86" y2="76" stroke="#e85d04" stroke-width="3" stroke-linecap="round"/>
+      <!-- propellers -->
+      <ellipse cx="14" cy="21" rx="11" ry="4" fill="#f48c06" opacity="0.7"/>
+      <ellipse cx="86" cy="21" rx="11" ry="4" fill="#f48c06" opacity="0.7"/>
+      <ellipse cx="14" cy="79" rx="11" ry="4" fill="#f48c06" opacity="0.7"/>
+      <ellipse cx="86" cy="79" rx="11" ry="4" fill="#f48c06" opacity="0.7"/>
+      <!-- body -->
+      <rect x="30" y="36" width="40" height="28" rx="8" fill="#1a1d23" stroke="#e2e5eb" stroke-width="1.5"/>
+      <!-- camera -->
+      <circle cx="50" cy="50" r="7" fill="#374151" stroke="#4b5563" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="3.5" fill="#0284c7"/>
+      <!-- center dot on props -->
+      <circle cx="14" cy="21" r="2.5" fill="#e85d04"/>
+      <circle cx="86" cy="21" r="2.5" fill="#e85d04"/>
+      <circle cx="14" cy="79" r="2.5" fill="#e85d04"/>
+      <circle cx="86" cy="79" r="2.5" fill="#e85d04"/>
+    </svg>
+  </div>
 
   <div class="categories">
-    <div class="cat-btn" onclick="showScreen('scan')">טכניקת סריקה</div>
-    <div class="cat-btn" onclick="showScreen('build')">הרכבה</div>
-    <div class="cat-btn" onclick="showScreen('safety')">בטיחות</div>
+    <button class="cat-btn" style="--cat-color: var(--scan)" onclick="showScreen('scan')">
+      <div class="cat-icon">🔍</div>
+      <div class="cat-info">
+        <div class="cat-title">טכניקת סריקה</div>
+        <div class="cat-desc">נהלים, הכנות וביצוע</div>
+      </div>
+      <div class="cat-arrow">‹</div>
+    </button>
+
+    <button class="cat-btn" style="--cat-color: var(--build)" onclick="showScreen('build')">
+      <div class="cat-icon">🔧</div>
+      <div class="cat-info">
+        <div class="cat-title">מדריך הרכבה מהיר</div>
+        <div class="cat-desc">EVO Max 4T/N</div>
+      </div>
+      <div class="cat-arrow">‹</div>
+    </button>
+
+    <button class="cat-btn" style="--cat-color: var(--safety)" onclick="showScreen('safety')">
+      <div class="cat-icon">⚠️</div>
+      <div class="cat-info">
+        <div class="cat-title">הוראות בטיחות</div>
+        <div class="cat-desc">27 כללי בטיחות חובה</div>
+      </div>
+      <div class="cat-arrow">‹</div>
+    </button>
+
+    <button class="cat-btn" style="--cat-color: var(--intel)" onclick="showScreen('intel')">
+      <div class="cat-icon">🔐</div>
+      <div class="cat-info">
+        <div class="cat-title">הוראות ביטחון מידע</div>
+        <div class="cat-desc">שימוש מאושר ואבטחה</div>
+      </div>
+      <div class="cat-arrow">‹</div>
+    </button>
+
+    <button class="cat-btn" style="--cat-color: var(--appendix)" onclick="showScreen('appendix')">
+      <div class="cat-icon">📋</div>
+      <div class="cat-info">
+        <div class="cat-title">נספחים</div>
+        <div class="cat-desc">ספר טלפונים, ציוד, נתוני טיסה</div>
+      </div>
+      <div class="cat-arrow">‹</div>
+    </button>
+
+    <button class="cat-btn" style="--cat-color: var(--fault)" onclick="showScreen('fault')">
+      <div class="cat-icon">⚡</div>
+      <div class="cat-info">
+        <div class="cat-title">סד״פ תקלות</div>
+        <div class="cat-desc">נתק תקשורת, GPS Spoofing, קפיאה</div>
+      </div>
+      <div class="cat-arrow">‹</div>
+    </button>
   </div>
 </div>
 
-<!-- CONTENT -->
+<!-- ============================================================
+     CONTENT SCREEN
+============================================================ -->
 <div id="content" class="screen">
   <div class="content-header">
-    <button class="back-btn" onclick="showHome()">←</button>
-    <div id="content-title"></div>
+    <button class="back-btn" onclick="showHome()">›</button>
+    <div class="content-header-info">
+      <div class="content-header-title" id="content-title"></div>
+      <div class="content-header-cat">נוהל הפעלת רחפן EVO</div>
+    </div>
+    <div class="content-icon-header" id="content-icon"></div>
   </div>
-
   <div class="content-body" id="content-body"></div>
-
   <div class="bottom-back">
-    <button onclick="showHome()">חזרה</button>
+    <button class="bottom-back-btn" onclick="showHome()">
+      ‹ חזרה למסך הראשי
+    </button>
   </div>
 </div>
 
 <script>
-
-const SCREENS = {
-  scan: {
-    title:'טכניקת סריקה',
-    render: () => `
-      ${accordion("עיתוי","הגעה לזירה, סריקות, הדממה ועוד")}
-      ${accordion("תנאים","מזג אוויר, סוללות, תקשורת")}
-    `
-  },
-  build: {
-    title:'הרכבה',
-    render: () => `
-      ${accordion("שלב 1","טעינת סוללה")}
-      ${accordion("שלב 2","פתיחת הרחפן")}
-    `
-  },
-  safety: {
-    title:'בטיחות',
-    render: () => `
-      ${accordion("כלל 1","אין להטיס מעל אנשים")}
-      ${accordion("כלל 2","יש לשמור קשר עין")}
-    `
-  }
-};
-
-function accordion(title,content){
+// Accordion helper — builds an accordion block
+function accordion(title, bodyHTML) {
   return `
     <div class="accordion-item">
       <div class="accordion-header" onclick="toggleAccordion(this)">
-        ${title}
+        <span class="accordion-title-text">${title}</span>
         <span class="accordion-arrow">▶</span>
       </div>
-      <div class="accordion-content">
-        <p>${content}</p>
+      <div class="accordion-body">
+        ${bodyHTML}
       </div>
     </div>
   `;
 }
 
-function toggleAccordion(el){
-  el.parentElement.classList.toggle('active');
+function toggleAccordion(header) {
+  const item = header.parentElement;
+  item.classList.toggle('open');
 }
 
-/* ניווט */
-function showScreen(id){
+const SCREENS = {
+  scan: {
+    title: 'טכניקת סריקה',
+    icon: '🔍',
+    color: 'var(--scan)',
+    render: () => `
+      <div class="section-block" style="animation-delay:0.05s">
+        <div class="section-title" style="--cat-color: var(--scan)">עיתוי</div>
+        <div class="info-card">
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>בהגעה לזירת האירוע על מנת למפות את זירת ההרס</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>בעת סריקות לאיתור לכודים</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>במהלך תרגולת סריקות והדממת אתר</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>ובכל שלב בו נדרשת אינדיקציה נוספת לבחינת או שלילת תא שטח ויש אפשרות להטיס רחפן</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block" style="animation-delay:0.1s">
+        <div class="section-title" style="--cat-color: var(--scan)">סמכות מאשרת</div>
+        <div class="info-card">
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>מפקד פלוגת חילוץ או לפי בקשת מהנדס ו/או קמ"ן ו/או קה"א.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div><strong>בישראל</strong> – יחידת בקרה אווירית דרומית/צפונית ע"פ גזרה</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block" style="animation-delay:0.15s">
+        <div class="section-title" style="--cat-color: var(--scan)">תנאים</div>
+        <div class="info-card">
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>תנאי שטח ותנאי ראייה שלא מונעים תקשורת עם הרחפן.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>מזג אוויר - ללא צפי למשקעים, מגבלות רוח וטמפרטורה – בהתאם לסוג הרחפן.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>סוללות טעונות לרמה שמאפשרת את ביצוע המשימה.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>עמידה בכל הוראות הבטיחות באתר ורק לאחר מכן לפי מגבלות הבטיחות של הרחפן.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block" style="animation-delay:0.2s">
+        <div class="section-title" style="--cat-color: var(--scan)">סד"כ מבצע</div>
+        <div class="info-card">
+          <p class="fault-text">סריקות בעזרת רחפן יתבצעו בחוליה של 2 מטיסים שעברו הכשרה מתאימה– צופה ומטיס</p>
+        </div>
+      </div>
+
+      <div class="section-block" style="animation-delay:0.25s">
+        <div class="section-title" style="--cat-color: var(--scan)">השיטה לביצוע — הכנות</div>
+        ${accordion('1. ביצוע תדריך', `
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>קבלת דגשי בטיחות (מהנדס)</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>דגשי מודיעין (קמ"ן)</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>דגשי מפקד כוח החילוץ</div></li>
+          </ul>
+        `)}
+        ${accordion('2. חלוקת אתר', `
+          <p class="fault-text">חלוקת האתר לגזרות סריקה והגדרת גבולות ברורים</p>
+        `)}
+        ${accordion('3. התאמת אמצעים', `
+          <p class="fault-text">מצלמה מתאימה (תרמית, אופטית), רמקול ופנסים</p>
+        `)}
+        ${accordion('4–8. המשך הכנות', `
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>בדיקת סוללות ברחפן ובשלט</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>קבלת אישור הטסה מהגורמים המתאימים ומחמ"ל רמה ממונה (לרוב חמל פלוגה)</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>בדיקת מזג אויר, תנאי ראות ותכסית במטרה לזהות מפגעים בזמן ההטסה</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>ביצוע בד"ח מלא לפני הטסה</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>בחירת המשימה תתבצע בהתאם להוראת המפקד</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>מסלול הטיסה יהיה יעיל וחסכוני</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>בתכנון המסלול יש להתחשב בפעילות הכוחות ולנקוט אמצעי בטיחות על מנת לשמור עליהם ועל הרחפן ולצמצם הפרעה לעבודתם</div></li>
+          </ul>
+        `)}
+      </div>
+
+      <div class="section-block" style="animation-delay:0.3s">
+        <div class="section-title" style="--cat-color: var(--scan)">ביצוע — בהתאם לסוג המשימה</div>
+
+        ${accordion('📸 תמונת מצב מהירה', `
+          <p class="fault-text">מתבצע דבר ראשון בהגעה לאתר.</p>
+          <p class="fault-text" style="margin-top:8px">תמונה מרחבית בגימבל 90 — "ארבעה מבטים" – 4 תמונות מ4 פינות שטח האתר לכיוון מרכז האתר</p>
+          <p class="fault-text" style="margin-top:8px">לאחר איסוף לתמונת מצב מהירה יש להוריד את הרחפן, לפרוק למחשב ולהעביר את התוצרים לחמל רמ"מ.</p>
+        `)}
+        ${accordion('🗺️ איסוף לעזרים', `
+          <p class="fault-text">הכנת מודל תלת מימד ותצ"א מרחבית - לטובת עזר שפה משותפת.</p>
+        `)}
+        ${accordion('📢 כריזה באמצעות מערכת כריזה', `
+          <p class="fault-text">רלוונטי להעברת מסרים ולהדממות אתר - לפי הנחיית מפקד.</p>
+          <p class="fault-text" style="margin-top:8px">יש לכוון את המערכת לכיוון מרכז האתר, רצוי שהרחפן ישהה בגובה מעל מרכז האתר</p>
+          <div class="warning-card" style="margin-top:12px;margin-bottom:0">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-text">דגש בטיחות - המערכת רבת עוצמה, יש לכרוז במרחק מאנשים (לכודים וצוותי חילוץ) על מנת לא לפגוע בשמיעתם.</div>
+          </div>
+        `)}
+        ${accordion('💡 שיפור התאורה באתר בלילה', `
+          <p class="fault-text">לפי הנחיית מפקד. על מנת לא להפריע לכוחות ולהאיר בצורה יעילה - יש לשהות בגובה המתאים מעל מרכז האתר ולכווונן את הפנסים (באמצעות כיוון המצלמה) כלפי מטה (90 מעלות)</p>
+        `)}
+        ${accordion('📼 תיעוד לתחקור ולמידה ו/או דו"צ', `
+          <p class="fault-text">יש לבצע תיעוד כל העת לטובת תחקור האירוע, למידה לאירוע הבא ולעיתים גם עבור מדיה שמתפרסמת בדובר צה"ל</p>
+          <p class="fault-text" style="margin-top:8px">יש להקפיד על תיעוד מקצועי ויעיל</p>
+        `)}
+        ${accordion('📌 תיעוד וסימון בשטח', `
+          <p class="fault-text">כל הממצאים והמידע שנאספים במהלך הסריקות עם הרחפן מתועדים באופן מדוקדק ומעוברים למודיעין או כלוסייה.</p>
+          <p class="fault-text" style="margin-top:8px">שימור ידע - יש לנהל תיקיית תוצרים עבור כל מבנה, בתוכה תיעוד הסריקה עבור כל גזרה – תמונות סטילס + וידאו</p>
+        `)}
+      </div>
+
+      <div class="section-block" style="animation-delay:0.35s">
+        <div class="section-title" style="--cat-color: var(--scan)">סיום</div>
+        <div class="info-card">
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>יש לדווח אודות הממצאים למפקד ולמודיעין או כלוסייה דרך חמ"ל הפלוגה.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--scan)"></div><div>יש לדווח לחמ"ל רמה ממונה על סיום משימה והורדת רחפן</div></li>
+          </ul>
+        </div>
+      </div>
+    `
+  },
+
+  build: {
+    title: 'מדריך הרכבה מהיר',
+    icon: '🔧',
+    color: 'var(--build)',
+    render: () => `
+      <div class="section-block" style="animation-delay:0.05s">
+        ${accordion('1. טעינת הסוללה', `
+          <p class="fault-text">לשימוש ראשון, אנא טען והפעל את סולדת הפנימית של השלט הרחוק.</p>
+        `)}
+        ${accordion('2. הכנת הכלי', `
+          <p class="fault-text">לחצו לחיצה ממושכת על החריץ כדי להסיר את כיסוי הגימבל</p>
+          <div class="warning-card" style="margin-top:10px;margin-bottom:10px">
+            <div class="warning-icon">⚡</div>
+            <div class="warning-text">הכנס את הסוללה לתוך הכלי — <strong>ודא טעינה מלאה והכנסה עד הסוף</strong></div>
+          </div>
+          <p class="fault-text">פרשו את זרועות הכלי לפי הסדר</p>
+          <div class="warning-card" style="margin-top:10px;margin-bottom:0">
+            <div class="warning-icon">✅</div>
+            <div class="warning-text"><strong>יש לוודא פתיחת זרועות מלאה עד קצה מהלך</strong> (בחלק מהדגמים יש לוודא נעילת קליפסים) ותקינות פרופלורים.</div>
+          </div>
+        `)}
+        ${accordion('3. הכנת השלט הרחוק', `
+          <p class="fault-text">התקן את מוטות ההיגוי</p>
+          <p class="fault-text" style="margin-top:6px">פתח את האנטנה</p>
+        `)}
+        ${accordion('4. הכנה להטסה', `
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--build)"></div><div>הדלק את השלט הרחוק — לחץ במשך 2 שניות</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--build)"></div><div>הדלק את הכלי</div></li>
+          </ul>
+        `)}
+        ${accordion('5. שלב המראה', `
+          <p class="fault-text">לחיצה אחת להמראה אוטומטית</p>
+          <div class="warning-card" style="margin-top:10px;margin-bottom:10px">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-text">שימו לב: אנא המראו בשטח פתוח</div>
+          </div>
+          <p class="fault-text">הפעל את המנועים (ידני):</p>
+          <div class="info-card" style="margin-top:8px;margin-bottom:0;background:rgba(124,58,237,0.06);border-color:rgba(124,58,237,0.2)">
+            <p class="fault-text">חצב פעולה של הג'ויסטיקים (מצב 2):</p>
+            <p class="fault-text">חוט הינוי שמאלי / חוט הינוי ימיני</p>
+            <p class="fault-text">לנגוע קדימה — לנגוע אחורה — לנגוע שמאלה — לנגוע ימינה</p>
+          </div>
+        `)}
+      </div>
+    `
+  },
+
+  safety: {
+    title: 'הוראות בטיחות',
+    icon: '⚠️',
+    color: 'var(--safety)',
+    render: () => {
+      const rules = [
+        'כלל תפעול המערכות יבוצע ע"י מפעילים שהוכשרו להפעלת הרחפנים שמצויינים במסמך.',
+        'אין להטיס את הרחפן מעל גובה ההטסה המורשה בצהל – 500 מעפ"ש.',
+        'יש לשמור לפחות על 3 מטר מרחק בטיחות בין הרחפן לכלל הנת"בים בשטח.',
+        'יש להקפיד על מרחק של לפחות 50 מטר בין כל שתי מערכות על הקרקע / באוויר.',
+        'בטיסה במצב ATTI יש לשמור על מרחק של 8 מטר בהמראה / נחיתה.',
+        'אין לטוס עם פרופלור פגום.',
+        'אין להשאיר את הרחפן ללא השגחה וקשר עין.',
+        'באימון בחושך, כאשר הרחפן על הקרקע יש להדליק אורות.',
+        'אין להטיס רחפן עם כרטיס זיכרון מבצעי.',
+        'אין להשאיר פליקן רחפן פתוח.',
+        'יש להשתמש בישל"ט עד 15% סוללה. (זמן עבודה שעתיים וחצי).',
+        'רחפן יהיה על הקרקע עד 20% בסוף ההטסה. (זמן עבודה שעה ו20 דקות).',
+        'על נקודת ההמראה / נחיתה להיות מישרות.',
+        'על נקודת ההמראה / נחיתה להיות ללא מכשולים בקרקע ובגובה.',
+        'אין להטיס במצבי בתנאי רוח קיצוניים – 15 מטר בשנייה בהמראה 20 מטר בשנייה בנחיתה. במצב ATTI ההגבלה 11 מטר בשנייה תמיד.',
+        'אין להטיס בגשם כבד.',
+        'אין להטיס בקרבת אנשים – יש לקבוע שטח סטרילי מלא.',
+        'יש להרחיק מאלמנטים קורנים או שדות אלקטרומגנטיים כגון: אנטנות, עמודי חשמל ומת גבוה, רכבים, גופי מתכת גדולים.',
+        'אין לאחסן סוללות ורחפן ברכב.',
+        'יש לוודא תקינות סוללה לפני הכנסתה.',
+        'אין לצאת מטווחי הטיסה המקסימלי – 4 ק"מ',
+        'יש לוודא כי האנטנות פתוחות ומוברגות עד הסוף לפני הטסה.',
+        'אין לפרק את הסטיקים מהשלט.',
+        'יש להשתמש בסוללות ומטעני סוללות שאושרו ע"י הגורם המוסמך - רמ"ד מקורות אנרגיה בחט"ל.',
+        'יש להקפיד על הסוללות מרטיבות.',
+        'שינוע הסוללות ייעשה אך ורק בתוך המארז הייעודי של המערכת.',
+        'יש לפעול בהתאם להוראות מקטנא"ר לתפעול ואחזקת רחפנים, סימוכין אמצעים מיוחדים / כ- .0015'
+      ];
+      return `
+        <div class="section-block" style="animation-delay:0.05s">
+          <div class="section-title" style="--cat-color: var(--safety)">27 כללי בטיחות</div>
+          <ul class="step-list">
+            ${rules.map((r, i) => `
+              <li class="step-item">
+                <div class="step-num">${i + 1}</div>
+                <div>${r}</div>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+    }
+  },
+
+  intel: {
+    title: 'הוראות ביטחון מידע',
+    icon: '🔐',
+    color: 'var(--intel)',
+    render: () => `
+      <div class="section-block" style="animation-delay:0.05s">
+        <div class="section-title" style="--cat-color: var(--intel)">הוראות ביטחון מידע</div>
+        <div class="info-card">
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--intel)"></div><div>יעשה שימוש ברחפן אשר נרכש דרך רכש צבאי בלבד, חל איסור שימוש ברחפן אזרחי.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--intel)"></div><div>השימוש ברחפן יבוצע אך ורק במסגרת זירת הרס אזרחית.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--intel)"></div><div>אין לבצע שימוש ברחפנים באתרים אסטרטגיים. (שב"כ, מוסד, מחנות צבאיים, אתרי חומ"ס ועוד).</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--intel)"></div><div>במקרה של נפילת רחפן יש לדווח במיידי לחמ"ל ביטחון המידע הפיקודי.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--intel)"></div><div>כרטיס הזיכרון יהיה חדש ונקי מפעילויות צבאיות קודמות.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--intel)"></div><div>פריקת כרטיס הזיכרון יהיה למחשב בהתאם לסיווג המידע.</div></li>
+          </ul>
+        </div>
+      </div>
+    `
+  },
+
+  appendix: {
+    title: 'נספחים',
+    icon: '📋',
+    color: 'var(--appendix)',
+    render: () => `
+      <div class="section-block" style="animation-delay:0.05s">
+        <div class="section-title" style="--cat-color: var(--appendix)">ספר טלפונים</div>
+        <div class="phone-list">
+          <div class="phone-item"><span class="phone-label">יב"א דרום</span><span class="phone-number">08-6502338</span></div>
+          <div class="phone-item"><span class="phone-label">יב"א צפון</span><span class="phone-number">04-6926207</span></div>
+          <div class="phone-item"><span class="phone-label">מב"א צפון (לבנון)</span><span class="phone-number">073-3482026</span></div>
+          <div class="phone-item"><span class="phone-label">מב"א דרום (עזה)</span><span class="phone-number">08-9115730</span></div>
+          <div class="phone-item"><span class="phone-label">תשלס פד"ם</span><span class="phone-number">073-3482029</span></div>
+          <div class="phone-item"><span class="phone-label">תשלס פצ"ן</span><span class="phone-number">02-5305102</span></div>
+          <div class="phone-item"><span class="phone-label">תשלס פקמ"ז</span><span class="phone-number">03-6067970</span></div>
+        </div>
+      </div>
+
+      <div class="section-block" style="animation-delay:0.1s">
+        <div class="section-title" style="--cat-color: var(--appendix)">רשימת ציוד — ערכת EVO</div>
+        <div class="equipment-grid">
+          <div class="equip-item"><div class="equip-dot"></div>מארז קשיח</div>
+          <div class="equip-item"><div class="equip-dot"></div>רחפן</div>
+          <div class="equip-item"><div class="equip-dot"></div>שלט</div>
+          <div class="equip-item"><div class="equip-dot"></div>2 סטיקים</div>
+          <div class="equip-item"><div class="equip-dot"></div>פרופלורים</div>
+          <div class="equip-item"><div class="equip-dot"></div>4 סוללות</div>
+          <div class="equip-item"><div class="equip-dot"></div>מטען רב ערוצי</div>
+          <div class="equip-item"><div class="equip-dot"></div>יח רמקול פנס</div>
+          <div class="equip-item" style="grid-column: span 2"><div class="equip-dot"></div>מגן גימבל</div>
+        </div>
+      </div>
+
+      <div class="section-block" style="animation-delay:0.15s">
+        <div class="section-title" style="--cat-color: var(--appendix)">נתוני טיסה יבשים</div>
+        <div class="spec-grid">
+          <div class="spec-item">
+            <span class="spec-value">35 דק׳</span>
+            <span class="spec-label">זמן שהייה מקסימלי</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-value">72 קמ"ש</span>
+            <span class="spec-label">מהירות מרבית</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-value">8 בופור</span>
+            <span class="spec-label">עמידות לרוח</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-value">7,000 מ׳</span>
+            <span class="spec-label">תקרה מבצעית</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="fault-section-title">מהירות מרבית</div>
+          <p class="fault-text">72 קמ"ש (20 מטר/שנייה)</p>
+          <div class="fault-section-title">עמידות לרוח</div>
+          <p class="fault-text">עד דרגה 8 בסולם בופור (17-20 מטר/שנייה)</p>
+        </div>
+      </div>
+
+      <div class="section-block" style="animation-delay:0.2s">
+        <div class="section-title" style="--cat-color: var(--appendix)">יכולות</div>
+        ${accordion('👁️ כיסוי מרחבי', `
+          <p class="fault-text">לרחפן מערך חיישני ראייה בינוקולריים המגובים ב-2 חיישני אולטרסאונד.</p>
+        `)}
+        ${accordion('🗺️ מיפוי מכשולים', `
+          <p class="fault-text">בניית מפה תלת-ממדית בזמן אמת של סביבת הכלי ברדיוס של עד 30 מטרים.</p>
+        `)}
+      </div>
+
+      <div class="section-block" style="animation-delay:0.25s">
+        <div class="section-title" style="--cat-color: var(--safety)">⚠️ תיאום עם רשות מקומית</div>
+        <div class="warning-card">
+          <div class="warning-icon">⚠️</div>
+          <div class="warning-text">יש לתאם כל הרמת רחפן גם מול רשות מקומית: בארץ – לחפש גורם משטרה באתר ההרס ולתאם מולו הרמת רחפן. אי תיאום יכול להוביל לייירוט הרחפן</div>
+        </div>
+      </div>
+    `
+  },
+
+  fault: {
+    title: 'סד״פ תקלות',
+    icon: '⚡',
+    color: 'var(--fault)',
+    render: () => `
+      <div class="section-block" style="animation-delay:0.05s">
+        ${accordion('📡 נתק תקשורת', `
+          <div class="fault-section-title">מצב</div>
+          <p class="fault-text">כמות התקשורת שעולה או יורדת בין השלט לרחפן יורדת לאורך זמן או מיידית ל0% קליטה.</p>
+
+          <div class="fault-section-title">דרכי מניעה</div>
+          <p class="fault-text">בדיקת טווח קליטה בהגעה לגזרה, בדיקת שיבושי WIFI/900 בתשל"ס לפני ובמהלך הטסה, שיפור התקשורת עם הרחפן בעזרת הרמה לגובה מתאים וחיבור אנטנות בצורה איכותית.</p>
+
+          <div class="fault-section-title">איך מזהים</div>
+          <p class="fault-text">ירידה של מד הקליטה בשלט ל0%, חוסר קבלת נתונים מהרחפן.</p>
+
+          <div class="fault-section-title">תגובת המטיס</div>
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם הרחפן הוגדר לRTL (חזרה הביתה) בנתק תקשורת מחכים כדקה וחצי לחזרת הרחפן אוטמטית.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם הקליטה לא חוזרת מנתקים אנטנות חיצוניות מחברים אנטנות אומניות (האנטנות שעל השלט) ועולים למקום גבוה ולכיוון הרחפן.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם הקליטה לא חוזרת צריך לנסות לשלוח פקודות לרחפן (PANIC, קריטי) כדי לנסות לקבל שליטה בחזרה.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם הקליטה לא חוזרת במקרה קיצון לסגור את האפליקציה ולפתוח מחדש.</div></li>
+          </ul>
+
+          <div class="fault-section-title">תחקור ומציאת רחפן</div>
+          <p class="fault-text">אם סופית הרחפן לא חזר, יש לפתוח "מצא את הרחפן" ולדקור איפה בדיוק נחת הרחפן. להיכנס ללוגים ולנסות להבין מה גרם לרחפן ליפול\להיסחף (סוללה, gnss, תקלה טכנית וכו')</p>
+
+          <div class="warning-card" style="margin-top:12px;margin-bottom:0">
+            <div class="warning-icon">🔴</div>
+            <div class="warning-text"><strong>חשוב לזכור:</strong> נתק תקשורת יכול לגרום ממגוון משפיעים או מזיהוי מאוחר של זיוף GPS. אין להפסיק לנסות להתחבר מחדש לרחפן עד סוף זמן הסוללה.</div>
+          </div>
+        `)}
+      </div>
+
+      <div class="section-block" style="animation-delay:0.1s">
+        ${accordion('🛰️ זיוף GPS SPOOFING', `
+          <div class="fault-section-title">מצב</div>
+          <p class="fault-text">רחפן נסחף ומנסה להתרסק כתוצאה מזיוף מיקום שגוי שחזק יותר מהמיקום מבוסס הלווינים של הרחפן.</p>
+
+          <div class="fault-section-title">דרכי מניעה</div>
+          <p class="fault-text">הטסה על עיגון ויזואלי, בדיקת שיבושי\חסימות GPS בתשל"ס לפני ובמהלך הטסה, יציאה מGNSS ברגע שיורדת דראסטית כמות הלווינים.</p>
+
+          <div class="fault-section-title">איך מזהים</div>
+          <p class="fault-text">רחפן מתחיל להסחף במהירות, ירידה בגובה לא רצויה, מרחק לא סביר מהבית, כמות לווינים נמוכה (13-17) והטיה חזקה של הגימבל.</p>
+
+          <div class="fault-section-title">תגובת המטיס</div>
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div><strong>כיבוי GNSS וחזרה הביתה בATTI או עיגון ויזואלי</strong></div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם הרחפן ממשיך להסחף העברת הרחפן מיידית למצב קריטי, חזרה הביתה והנחתה בקשר עין ובמיומנות גבוהה מהרגיל.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם הרחפן כבר עבר לנתק תקשורת אחרי זיוף GNSS רוב הסיכויים שהוא התרסק.</div></li>
+          </ul>
+
+          <div class="fault-section-title">תחקור ומציאת הרחפן</div>
+          <p class="fault-text">מכיוון שהרחפן עבר זיוף GPS אין איך למצוא אותו לפי המיקום האחרון שלו, ולכן יש לנסות לנתח לפי המיקום האחרון שאנחנו זוכרים שהיינו איתו, 30 השניות האחרונות שמראות את כיוון ההסחפות, ותחקור הלוגים להבנה איפה הרחפן נפל.</p>
+
+          <div class="warning-card" style="margin-top:12px;margin-bottom:0">
+            <div class="warning-icon">🔴</div>
+            <div class="warning-text"><strong>חשוב לזכור:</strong> זמן התגובה למקרה של זיוף GPS הוא שניות בודדות, יש לנסות בכל דרך להמנע מכניסה למצב.</div>
+          </div>
+        `)}
+      </div>
+
+      <div class="section-block" style="animation-delay:0.15s">
+        ${accordion('🖥️ קפיאה / איבוד וידאו', `
+          <div class="fault-section-title">מצב</div>
+          <p class="fault-text">הרחפן לא מעביר וידאו לרחפן או שהשלט אינו מעבד את הוידאו המתקבל</p>
+
+          <div class="fault-section-title">דרכי מניעה</div>
+          <p class="fault-text">בדיקת תקינות לרחפן לפני הטסה, מעקב אחרי עדכוני חומרה ותוכנה, ניקוי מטמון תקופתי לאפליקציה, שמירה על חום שלט תקין באמצעות ניקוי פתחי איורור וקירור במהלך הטיסה.</p>
+
+          <div class="fault-section-title">איך מזהים</div>
+          <p class="fault-text">הוידאו מהרחפן הופך להיות אפור או תקוע על תמונה, הטלמטריה עדיין זזה.</p>
+
+          <div class="fault-section-title">תגובת המטיס</div>
+          <ul class="bullet-list">
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>מעבר בין מצלמות יום\לילה\תרמי</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>הזזת זום במצלמת היום וניסיון למעבר לעדשת זום\רחבה.</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם הוידאו עדיין תקוע חזרה לפי טלמטריה עד לנקודת הנחיתה, נחיתה בקשר עין,</div></li>
+            <li class="bullet-item"><div class="bullet-dot" style="background:var(--fault)"></div><div>אם יש צורך והמקום מאפשר מבצעית יציאה ממצב חשאי לזיהוי טוב יותר של הרחפן.</div></li>
+          </ul>
+
+          <div class="warning-card" style="margin-top:12px;margin-bottom:0">
+            <div class="warning-icon">💡</div>
+            <div class="warning-text"><strong>חשוב לזכור:</strong> המצב הנ"ל רלוונטי רק שהטלמטריה עובדת, אם הטלמטריה אינה עובדת מדובר במצב נתק תקשורת.</div>
+          </div>
+        `)}
+      </div>
+
+      <div class="section-block" style="animation-delay:0.2s">
+        <div class="section-title" style="--cat-color: var(--fault)">תקלות נוספות</div>
+        ${accordion('⚙️ כניסה פתאומית למצב ATTI', `
+          <p class="fault-text">הרחפן יכנס אוטומטית למצב זה כאשר לא יהיה GNSS וכשעיגון תרמי/ויזואלי לא יעבוד.</p>
+          <p class="fault-text" style="margin-top:8px">יש לוודא שכפתורי TPS ו- VPS דולקים.</p>
+          <p class="fault-text" style="margin-top:8px">במידה והרחפן עבר למצב זה, מומלץ להיכנס להגדרות -> טיסה -> התנהגות טיסה: "רגוע".</p>
+        `)}
+        ${accordion('🌡️ התחממות מטע"ד', `
+          <p class="fault-text">במידה ואנחנו רואים פיקסלים שחורים/ שרופים על גבי המסך, יש להיכנס להגדרות -> וידאו -> כיול FCC.</p>
+        `)}
+        ${accordion('🎥 תקלת וידאו', `
+          <p class="fault-text">יש לבצע כיול גימבל: הגדרות 9 נקודות-->אחזקה-->כיולים–>כיול גימבל.</p>
+        `)}
+        ${accordion('📶 תקלת תקשורת', `
+          <p class="fault-text">במידה ויש אחוזי RC ירודים ורואים בעיות בתקשורת עם הרחפן, יש להביא אותו לנחיתה.</p>
+        `)}
+      </div>
+    `
+  }
+};
+
+function showScreen(id) {
   const data = SCREENS[id];
-  document.getElementById('content-title').innerText = data.title;
-  document.getElementById('content-body').innerHTML = data.render();
+  if (!data) return;
+
+  document.getElementById('content-title').textContent = data.title;
+  document.getElementById('content-icon').textContent = data.icon;
+
+  const body = document.getElementById('content-body');
+  body.innerHTML = data.render();
+  body.style.setProperty('--cat-color', data.color);
 
   document.getElementById('home').classList.remove('active');
-  document.getElementById('content').classList.add('active');
+  const cs = document.getElementById('content');
+  cs.classList.add('active');
 
-  window.scrollTo(0,0); // FIX חשוב
+  // Scroll to top — both the element and the window
+  cs.scrollTop = 0;
+  body.scrollTop = 0;
+  window.scrollTo(0, 0);
 }
 
-function showHome(){
+function showHome() {
   document.getElementById('content').classList.remove('active');
   document.getElementById('home').classList.add('active');
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
-
 </script>
-
 </body>
 </html>
