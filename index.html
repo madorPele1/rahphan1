@@ -1,1079 +1,377 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>נוהל הפעלת רחפן EVO</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&display=swap');
-
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2230;
-    --border: #2a3447;
-    --accent: #e8a020;
-    --accent2: #f0c060;
-    --text: #e6edf3;
-    --text-muted: #8b949e;
-    --text-dim: #6e7681;
-    --danger: #f85149;
-    --success: #3fb950;
-    --info: #58a6ff;
-    --radius: 14px;
-    --radius-sm: 8px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  html, body {
-    height: 100%;
-    font-family: 'Heebo', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-  }
-
-  /* ─── SCREENS ─── */
-  .screen {
-    display: none;
-    min-height: 100vh;
-    flex-direction: column;
-  }
-  .screen.active { display: flex; }
-
-  /* ─── HOME SCREEN ─── */
-  #home {
-    background: var(--bg);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .home-hero {
-    position: relative;
-    padding: 52px 24px 36px;
-    background: linear-gradient(160deg, #1a2236 0%, #0d1117 60%);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .home-hero::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -80px;
-    width: 280px; height: 280px;
-    background: radial-gradient(circle, rgba(232,160,32,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .home-hero::after {
-    content: '';
-    position: absolute;
-    bottom: -40px; left: -60px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(88,166,255,0.07) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(232,160,32,0.15);
-    border: 1px solid rgba(232,160,32,0.3);
-    color: var(--accent2);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border-radius: 20px;
-    margin-bottom: 16px;
-  }
-
-  .badge::before { content: '◈'; font-size: 10px; }
-
-  .home-title {
-    font-size: 28px;
-    font-weight: 900;
-    line-height: 1.2;
-    color: var(--text);
-    margin-bottom: 8px;
-    position: relative;
-  }
-
-  .home-title span {
-    color: var(--accent);
-  }
-
-  .home-subtitle {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 400;
-    line-height: 1.6;
-    position: relative;
-  }
-
-  .drone-icon {
-    display: block;
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(135deg, var(--accent) 0%, #c87010 100%);
-    border-radius: 14px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    box-shadow: 0 4px 20px rgba(232,160,32,0.3);
-  }
-
-  /* ─── CATEGORY LIST ─── */
-  .categories {
-    padding: 24px 16px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 1;
-  }
-
-  .cat-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    padding: 0 4px;
-    margin-bottom: 4px;
-  }
-
-  .cat-btn {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 18px;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    text-align: right;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cat-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02));
-    opacity: 0;
-    transition: opacity 0.18s;
-  }
-
-  .cat-btn:active {
-    transform: scale(0.97);
-    border-color: var(--accent);
-  }
-
-  .cat-btn:active::before { opacity: 1; }
-
-  .cat-icon {
-    width: 44px; height: 44px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-
-  .cat-info { flex: 1; }
-
-  .cat-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 3px;
-  }
-
-  .cat-desc {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 400;
-  }
-
-  .cat-arrow {
-    color: var(--text-dim);
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  /* Category color themes */
-  .c-scan  .cat-icon { background: rgba(88,166,255,0.15); }
-  .c-build .cat-icon { background: rgba(63,185,80,0.15); }
-  .c-safe  .cat-icon { background: rgba(248,81,73,0.15); }
-  .c-sec   .cat-icon { background: rgba(232,160,32,0.15); }
-  .c-app   .cat-icon { background: rgba(188,140,255,0.15); }
-  .c-fault .cat-icon { background: rgba(240,192,96,0.15); }
-
-  .c-scan:active  { border-color: var(--info) !important; }
-  .c-build:active { border-color: var(--success) !important; }
-  .c-safe:active  { border-color: var(--danger) !important; }
-  .c-sec:active   { border-color: var(--accent) !important; }
-  .c-app:active   { border-color: #bc8cff !important; }
-  .c-fault:active { border-color: var(--accent2) !important; }
-
-  /* ─── CONTENT SCREEN ─── */
-  #content {
-    background: var(--bg);
-    animation: slideIn 0.25s ease forwards;
-  }
-
-  @keyframes slideIn {
-    from { transform: translateX(-20px); opacity: 0; }
-    to   { transform: translateX(0);     opacity: 1; }
-  }
-
-  .content-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(13,17,23,0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .back-btn {
-    width: 38px; height: 38px;
-    border-radius: 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    color: var(--text);
-    font-size: 18px;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-
-  .back-btn:active {
-    transform: scale(0.92);
-    background: var(--surface2);
-  }
-
-  .header-icon {
-    width: 36px; height: 36px;
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .header-title {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.2;
-  }
-
-  .content-body {
-    padding: 24px 20px 80px;
-    line-height: 1.85;
-    flex: 1;
-    overflow-y: auto;
-  }
-
-  /* ─── CONTENT TYPOGRAPHY ─── */
-  .content-body h2 {
-    font-size: 22px;
-    font-weight: 900;
-    color: var(--text);
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--border);
-    position: relative;
-  }
-
-  .content-body h2::after {
-    content: '';
-    position: absolute;
-    bottom: -2px; right: 0;
-    width: 48px; height: 2px;
-    background: var(--accent);
-  }
-
-  .content-body h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--accent2);
-    margin: 24px 0 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .content-body h3::before {
-    content: '';
-    width: 4px; height: 16px;
-    background: var(--accent);
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  .content-body p {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-  }
-
-  .content-body ul {
-    list-style: none;
-    margin-bottom: 16px;
-  }
-
-  .content-body ul li {
-    font-size: 14px;
-    color: var(--text-muted);
-    padding: 6px 0 6px 0;
-    border-bottom: 1px solid rgba(42,52,71,0.5);
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    line-height: 1.6;
-  }
-
-  .content-body ul li::before {
-    content: '›';
-    color: var(--accent);
-    font-size: 16px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .content-body ol {
-    list-style: none;
-    counter-reset: ol-counter;
-    margin-bottom: 16px;
-  }
-
-  .content-body ol li {
-    counter-increment: ol-counter;
-    font-size: 14px;
-    color: var(--text-muted);
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(42,52,71,0.5);
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    line-height: 1.6;
-  }
-
-  .content-body ol li::before {
-    content: counter(ol-counter);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 700;
-    width: 22px; height: 22px;
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 14px;
-  }
-
-  .card-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-  }
-
-  .warn-card {
-    background: rgba(248,81,73,0.08);
-    border-color: rgba(248,81,73,0.25);
-  }
-
-  .warn-card .card-title { color: var(--danger); }
-
-  .info-card {
-    background: rgba(88,166,255,0.06);
-    border-color: rgba(88,166,255,0.2);
-  }
-
-  .info-card .card-title { color: var(--info); }
-
-  .tip-card {
-    background: rgba(232,160,32,0.07);
-    border-color: rgba(232,160,32,0.22);
-  }
-
-  .tip-card .card-title { color: var(--accent2); }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 20px 0;
-  }
-
-  /* phone number styling */
-  .phone-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(42,52,71,0.5);
-    font-size: 14px;
-  }
-
-  .phone-item .label { color: var(--text-muted); }
-  .phone-item .number {
-    color: var(--info);
-    font-family: monospace;
-    font-size: 14px;
-    font-weight: 600;
-    direction: ltr;
-  }
-
-  /* equipment list */
-  .equipment-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .equip-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    font-size: 13px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .equip-item::before { content: '✓'; color: var(--success); font-size: 12px; }
-
-  /* spec rows */
-  .spec-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(42,52,71,0.5);
-    gap: 12px;
-  }
-
-  .spec-label { font-size: 13px; color: var(--text-muted); flex: 1; }
-  .spec-value { font-size: 13px; color: var(--text); font-weight: 600; text-align: left; direction: ltr; }
-
-  /* bottom back button */
-  .bottom-back {
-    position: fixed;
-    bottom: 0; right: 0; left: 0;
-    padding: 12px 20px 28px;
-    background: linear-gradient(transparent, rgba(13,17,23,0.98) 40%);
-    z-index: 50;
-  }
-
-  .bottom-back-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-size: 14px;
-    font-weight: 600;
-    padding: 14px;
-    width: 100%;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'Heebo', sans-serif;
-  }
-
-  .bottom-back-btn:active {
-    background: var(--surface2);
-    transform: scale(0.98);
-  }
-
-  /* highlight text */
-  strong {
-    color: var(--text);
-    font-weight: 700;
-  }
-
-  .highlight { color: var(--accent); font-weight: 600; }
-  .highlight-danger { color: var(--danger); font-weight: 600; }
-  .highlight-info { color: var(--info); font-weight: 600; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>נוהל הפעלת רחפן EVO</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Home Screen Styles */
+        #home-screen {
+            display: block;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-category {
+            background-color: var(--white);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .btn-category:active {
+            transform: scale(0.98);
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        /* Detail Screen Styles */
+        #detail-screen {
+            display: none;
+            background-color: var(--white);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            z-index: 10;
+        }
+
+        .content-area {
+            padding: 20px;
+            font-size: 16px;
+            white-space: pre-wrap; /* Maintains spacing from source */
+        }
+
+        .content-title {
+            color: var(--accent-color);
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-right: 4px solid var(--accent-color);
+            padding-right: 10px;
+        }
+
+        .btn-back {
+            display: block;
+            width: 100%;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+
+        .citation {
+            font-size: 0.8em;
+            color: #888;
+            vertical-align: super;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 480px) {
+            h1 { font-size: 22px; }
+            .btn-category { padding: 18px; font-size: 17px; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- ═══════════════════ HOME SCREEN ═══════════════════ -->
-<div id="home" class="screen active">
-  <div class="home-hero">
-    <div class="drone-icon">🚁</div>
-    <div class="badge">מסמך נהלים מבצעי</div>
-    <div class="home-title">נוהל הפעלת<br>רחפן <span>EVO</span></div>
-    <div class="home-subtitle">EVO Max 4T/N &nbsp;·&nbsp; מרץ 2026</div>
-  </div>
-
-  <div class="categories">
-    <div class="cat-label">בחר נושא</div>
-
-    <button class="cat-btn c-scan" onclick="showPage('scan')">
-      <div class="cat-icon">🔍</div>
-      <div class="cat-info">
-        <div class="cat-name">טכניקת סריקה</div>
-        <div class="cat-desc">הכנות, ביצוע, עיתוי וסיום</div>
-      </div>
-      <div class="cat-arrow">‹</div>
-    </button>
-
-    <button class="cat-btn c-build" onclick="showPage('build')">
-      <div class="cat-icon">🔧</div>
-      <div class="cat-info">
-        <div class="cat-name">מדריך הרכבה מהיר</div>
-        <div class="cat-desc">טעינה, הכנסה ופתיחת זרועות</div>
-      </div>
-      <div class="cat-arrow">‹</div>
-    </button>
-
-    <button class="cat-btn c-safe" onclick="showPage('safety')">
-      <div class="cat-icon">⚠️</div>
-      <div class="cat-info">
-        <div class="cat-name">הוראות בטיחות</div>
-        <div class="cat-desc">27 כללי תפעול ובטיחות</div>
-      </div>
-      <div class="cat-arrow">‹</div>
-    </button>
-
-    <button class="cat-btn c-sec" onclick="showPage('security')">
-      <div class="cat-icon">🔒</div>
-      <div class="cat-info">
-        <div class="cat-name">הוראות ביטחון מידע</div>
-        <div class="cat-desc">רכש, שימוש, אחסון כרטיס זיכרון</div>
-      </div>
-      <div class="cat-arrow">‹</div>
-    </button>
-
-    <button class="cat-btn c-app" onclick="showPage('appendix')">
-      <div class="cat-icon">📋</div>
-      <div class="cat-info">
-        <div class="cat-name">נספחים</div>
-        <div class="cat-desc">ספר טלפונים, ציוד, נתוני טיסה</div>
-      </div>
-      <div class="cat-arrow">‹</div>
-    </button>
-
-    <button class="cat-btn c-fault" onclick="showPage('fault')">
-      <div class="cat-icon">⚡</div>
-      <div class="cat-info">
-        <div class="cat-name">סד״פ תקלות</div>
-        <div class="cat-desc">נתק, GPS Spoofing, קפיאת וידאו</div>
-      </div>
-      <div class="cat-arrow">‹</div>
-    </button>
-  </div>
+<div class="container" id="home-screen">
+    <h1>נוהל הפעלת רחפן EVO</h1>
+    <div class="category-list">
+        <button class="btn-category" onclick="showCategory('technique')">טכניקת סריקה</button>
+        <button class="btn-category" onclick="showCategory('assembly')">מדריך הרכבה מהיר</button>
+        <button class="btn-category" onclick="showCategory('safety')">הוראות בטיחות</button>
+        <button class="btn-category" onclick="showCategory('security')">הוראות ביטחון מידע</button>
+        <button class="btn-category" onclick="showCategory('appendices')">נספחים</button>
+        <button class="btn-category" onclick="showCategory('troubleshooting')">סד״פ תקלות</button>
+    </div>
 </div>
 
-<!-- ═══════════════════ CONTENT SCREEN ═══════════════════ -->
-<div id="content" class="screen">
-  <div class="content-header">
-    <button class="back-btn" onclick="goHome()">‹</button>
-    <div id="header-icon" class="header-icon"></div>
-    <div id="header-title" class="header-title"></div>
-  </div>
-
-  <div class="content-body" id="content-body"></div>
-
-  <div class="bottom-back">
-    <button class="bottom-back-btn" onclick="goHome()">‹ חזרה למסך הראשי</button>
-  </div>
+<div id="detail-screen">
+    <div class="header">
+        <div id="category-title" class="content-title"></div>
+    </div>
+    <div class="content-area" id="category-content">
+        <!-- Content injected here -->
+    </div>
+    <div style="padding: 20px;">
+        <button class="btn-back" onclick="showHome()">חזרה למסך הראשי</button>
+    </div>
 </div>
 
 <script>
-const pages = {
+    const contentData = {
+        'technique': {
+            title: 'טכניקת סריקה',
+            text: `מהלך קצה עד מלאה זרועות פתיחת ודא לו יש קליפסים) נעילת ודא לו יש מהדגמים בחלק ) 
+פרופלורים. נות ותקי
+הסוף עד והכנסה מלאה טעינה ודא [1]
 
-  scan: {
-    icon: '🔍',
-    iconBg: 'rgba(88,166,255,0.15)',
-    title: 'טכניקת סריקה',
-    html: `
-      <h2>טכניקת סריקה</h2>
+: י עיתו רת ההרס י ז את ת למפו ע על מנת רו רת האי י לז בהגעה 
+דים לכו ר תו לאי ת קו סרי בעת והדממת אתר ת קו סרי לת במהלך תרגו
+רחפן ס להטי ת יש אפשרו ו לת תא שטח או שלי נת לבחי נוספת ה קצי נדי אי נדרשת בו בכל שלב ו
+סמכות מאשרת: /או קה"א. ו ן קמ" /או ו לפי בקשת מהנדס או ץ לו חי גת פלו מפקד
+גזרה ת ע"פ ני ת/צפו מי דרו ת רי י ו או דת בקרה חי י – בישראל [1]
 
-      <h3>עיתוי</h3>
-      <ul>
-        <li>בהגעה לזירת האירוע על מנת למפות את זירת ההרס</li>
-        <li>בעת סריקות לאיתור לכודים</li>
-        <li>במהלך תרגולת סריקות והדממת אתר</li>
-        <li>ובכל שלב בו נדרשת אינדיקציה נוספת לבחינת או שלילת תא שטח ויש אפשרות להטיס רחפן</li>
-      </ul>
+ות: התני . רת עם הרחפן ם תקשו נעי מו ה שלא י ראי תנאי ו תנאי שטח 
+. ג הרחפן לסו – בהתאם רה וטמפרטו ח רו ת ם, מגבלו צפי למשקעי ללא - ר י ו או ג מז מה. ע המשי צו בי לרמה שמאפשרת את ת נו ת טעו ללו סו 
+. ת של הרחפן חו ת הבטי לפי מגבלו ן מכ לאחר רק ו ת באתר חו ת הבטי ראו הו בכל דה עמי [2]
 
-      <h3>סמכות מאשרת</h3>
-      <ul>
-        <li>מפקד פלוגת חילוץ או לפי בקשת מהנדס ו/או קמ"ן ו/או קה"א.</li>
-        <li><strong>בישראל</strong> – יחידת בקרה אווירית דרומית/צפונית ע"פ גזרה</li>
-      </ul>
+סד”כ מבצע: ומטיס פה צו ם שעברו הכשרה מתאימה– סי 2 מטי ה של לי בחו יתבצעו רחפן בעזרת ת קו סרי [2]
 
-      <h3>התניות</h3>
-      <ul>
-        <li>תנאי שטח ותנאי ראייה שלא מונעים תקשורת עם הרחפן.</li>
-        <li>מזג אוויר - ללא צפי למשקעים, מגבלות רוח וטמפרטורה – בהתאם לסוג הרחפן.</li>
-        <li>סוללות טעונות לרמה שמאפשרת את ביצוע המשימה.</li>
-        <li>עמידה בכל הוראות הבטיחות באתר ורק לאחר מכן לפי מגבלות הבטיחות של הרחפן.</li>
-      </ul>
+הכנות:
+ך:1. ע תדרי צו בי (מהנדס) ת חו בטי דגשי קבלת 
+( ן (קמ" ן עי די מו דגשי ץ לו ח החי כו דגשי מפקד
+ם2. רי ברו ת לו גבו הגדרת ו קה סרי ת רו ז לג חלוקת האתר [2]
 
-      <h3>סד"כ מבצע</h3>
-      <div class="card info-card">
-        <div class="card-title">📌 הרכב</div>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;">סריקות בעזרת רחפן יתבצעו בחוליה של 2 מטיסים שעברו הכשרה מתאימה– צופה ומטיס</p>
-      </div>
+ם3. פנסי ו ל רמקו , ת) פטי או ת, (תרמי מה ם: מצלמה מתאי התאמת אמצעי 
+ובשלט4. ברחפן ת ללו סו קת בדי 
+גה)5. פלו ב חמל לרו ) נה רמה ממו ומחמ"ל ם מי ם המתאי רמי ו ר הטסה מהג שו אי קבלת 
+מן ההטסה6. בז ם ת מפגעי לזהו ת במטרה ותכסי ת ראו ר, תנאי י או ג מז קת בדי 
+י הטסה7. לפנ בד"ח מלא ע צו בי 
+ן משימה8. ו תכנ ראת המפקד להו רת המשימה תתבצע בהתאם בחי [3]
 
-      <h3>הכנות</h3>
-      <ol>
-        <li><strong>ביצוע תדריך:</strong>
-          <ul style="margin-top:8px;">
-            <li>קבלת דגשי בטיחות (מהנדס)</li>
-            <li>דגשי מודיעין (קמ"ן)</li>
-            <li>דגשי מפקד כוח החילוץ</li>
-          </ul>
-        </li>
-        <li>חלוקת האתר לגזרות סריקה והגדרת גבולות ברורים</li>
-        <li>התאמת אמצעים: מצלמה מתאימה (תרמית, אופטית), רמקול ופנסים</li>
-        <li>בדיקת סוללות ברחפן ובשלט</li>
-        <li>קבלת אישור הטסה מהגורמים המתאימים ומחמ"ל רמה ממונה (לרוב חמל פלוגה)</li>
-        <li>בדיקת מזג אויר, תנאי ראות ותכסית במטרה לזהות מפגעים בזמן ההטסה</li>
-        <li>ביצוע בד"ח מלא לפני הטסה</li>
-        <li><strong>תכנון משימה:</strong>
-          <ul style="margin-top:8px;">
-            <li>בחירת המשימה תתבצע בהתאם להוראת המפקד</li>
-            <li>מסלול הטיסה יהיה יעיל וחסכוני</li>
-            <li>בתכנון המסלול יש להתחשב בפעילות הכוחות ולנקוט אמצעי בטיחות על מנת לשמור עליהם ועל הרחפן ולצמצם הפרעה לעבודתם</li>
-          </ul>
-        </li>
-      </ol>
+ני ו וחסכ ל עי י ה הי י סה ל הטי מסלו על הרחפן ו הם ר עלי ת על מנת לשמו חו בטי ט אמצעי לנקו ו ת חו הכו ת לו יש להתחשב בפעי ל ן המסלו ו בתכנ 
+לעבודתם לצמצם הפרעה ו [3]
 
-      <div class="divider"></div>
-      <h2>טכניקת סריקה - המשך</h2>
+: ע ו צ י ב ל ה ט י ש ה 
+ג המשימה -בהתאם לסו ביצוע 
+. לאתר ן בהגעה ראשו דבר – מתבצע תמונת מצב מהירה מבל 90 בגי ת נה מרחבי תמו [4]
 
-      <h3>ביצוע - בהתאם לסוג המשימה</h3>
+ק למחשב לפרו , ד את הרחפן רי להו ש י רה נת מצב מהי לתמו ף סו אי לאחר מרכז האתר ן ו ו י לכ ת שטח האתר נו פי ת מ4 נו 4 תמו – ם" "ארבעה מבטי רמ"מ. לחמל ם צרי ר את התו להעבי ו [4]
 
-      <div class="card tip-card">
-        <div class="card-title">⚡ תמונת מצב מהירה</div>
-        <p style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">מתבצע דבר ראשון בהגעה לאתר.</p>
-        <ul>
-          <li>תמונה מרחבית בגימבל 90</li>
-          <li>"ארבעה מבטים" – 4 תמונות מ-4 פינות שטח האתר לכיוון מרכז האתר</li>
-          <li>לאחר איסוף לתמונת מצב מהירה יש להוריד את הרחפן, לפרוק למחשב ולהעביר את התוצרים לחמל רמ"מ.</li>
-        </ul>
-      </div>
+איסוף לעזרים ר שפה משותפת. עז בת לטו ת- ותצ"א מרחבי מד מי דל תלת מו הכנת 
+כריזה זה באמצעות מערכת כרי . ת מפקד י לפי הנחי ת אתר- להדממו ו ם נטי להעברת מסרי ו ו רל 
+בה מעל מרכז האתר בגו ישהה י שהרחפן רצו , מרכז האתר ן ו ו י לכ ן את המערכת ו ו לכ ש י ע בשמיעתם. לפגו לא ץ) על מנת לו חי תי ו צו ו ם די לכו ) ם ז במרחק מאנשי ו לכר ש י צמה, עו רבת ת- המערכת חו בטי דגש [4]
 
-      <h3>איסוף לעזרים</h3>
-      <ul>
-        <li>הכנת מודל תלת מימד ותצ"א מרחבית- לטובת עזר שפה משותפת.</li>
-      </ul>
+ת מפקד י לפי הנחי לה- בלי רה באתר ר התאו פו שי ן המצלמה) ו נ ו ו כ ת (באמצעו ם ן את הפנסי נ ו ו לכ ו מרכז האתר ם מעל בה המתאי בגו ת יש לשהו לה- עי י רה בצו ר להאי ו ת חו לכו ע להפרי לא על מנת 
+ת) (90 מעלו כלפי מטה [5]
 
-      <h3>כריזה באמצעות מערכת כריזה</h3>
-      <ul>
-        <li>רלוונטי להעברת מסרים ולהדממות אתר- לפי הנחיית מפקד.</li>
-        <li>יש לכוון את המערכת לכיוון מרכז האתר, רצוי שהרחפן ישהה בגובה מעל מרכז האתר</li>
-        <li><span class="highlight-danger">דגש בטיחות</span>- המערכת רבת עוצמה, יש לכרוז במרחק מאנשים (לכודים וצוותי חילוץ) על מנת לא לפגוע בשמיעתם.</li>
-      </ul>
+דו"צ /או ו ולמידה ר תיעוד לתחקו בר צה"ל בדו ה שמתפרסמת ר מדי גם עבו ם תי לעי ו ע הבא רו לאי דה למי ע, רו ר האי בת תחקו לטו כל העת ד עו תי לבצע ש י 
+ל עי י ו עי ד מקצו עו תי על ד להקפי ש י [5]
 
-      <h3>שיפור התאורה באתר בלילה</h3>
-      <ul>
-        <li>לפי הנחיית מפקד</li>
-        <li>על מנת לא להפריע לכוחות ולהאיר בצורה יעילה- יש לשהות בגובה המתאים מעל מרכז האתר ולכווּנן את הפנסים (באמצעות כווּנון המצלמה) כלפי מטה (90 מעלות)</li>
-      </ul>
+: ן בשטח וסימו ד תיעו ה. י סי כלו או ן עי די למו ם ברי מעו ו קדק פן מדו באו ם עדי ת עם הרחפן מתו קו ם במהלך הסרי דע שנאספי והמי ם כל הממצאי דאו י ו + לס ת סטי נו – תמו רה גז כל ר קה עבו ד הסרי עו תי כה בתו כל מבנה, ר ם עבו צרי תו ת י קי תי לנהל ש י - דע י ר מו שי [5]
 
-      <h3>תיעוד לתחקור ולמידה ו/או דו"צ</h3>
-      <ul>
-        <li>יש לבצע תיעוד כל העת לטובת תחקור האירוע, למידה לאירוע הבא ולעיתים גם עבור מדיה שמתפרסמת בדובר צה"ל</li>
-        <li>יש להקפיד על תיעוד מקצועי ויעיל</li>
-      </ul>
+ם: ו סי גה. דרך חמ"ל הפלו ה י סי כלו או ן עי די למו ו ם למפקד ת הממצאי דו או ח ו לדו ש י 
+רחפן רדת הו ו מה ם משי ו סי על נה רמה ממו לחמ"ל ח ו לדו ש י [6]`
+        },
+        'assembly': {
+            title: 'מדריך הרכבה מהיר',
+            text: `##### ך הרכבה מהיר מדרי [1]
 
-      <h3>תיעוד וסימון בשטח</h3>
-      <ul>
-        <li>כל הממצאים והמידע שנאספים במהלך הסריקות עם הרחפן מתועדים באופן מדוקדק ומעוברים למודיעין אוכלוסייה.</li>
-        <li>שימור ידע - יש לנהל תיקיית תוצרים עבור כל מבנה, בתוכה תיעוד הסריקה עבור כל גזרה – תמונות סטילס + וידאו</li>
-      </ul>
+1.טעינת הסוללה
+לשימוש ראשון, אנא טען והפעל את סוללת הכלי ואת הסוללה הפנימית של השלט הרחוק. [1]
 
-      <h3>סיום</h3>
-      <ul>
-        <li>יש לדווח אודות הממצאים למפקד ולמודיעין אוכלוסייה דרך חמ"ל הפלוגה.</li>
-        <li>יש לדווח לחמ"ל רמה ממונה על סיום משימה והורדת רחפן</li>
-      </ul>
-    `
-  },
+2. הכנת הכלי 
+לחצו לחיצה ממושכת על החריץ כדי להסיר את כיסוי הגימבל [1]
 
-  build: {
-    icon: '🔧',
-    iconBg: 'rgba(63,185,80,0.15)',
-    title: 'מדריך הרכבה מהיר',
-    html: `
-      <h2>מדריך הרכבה מהיר<br><span style="font-size:16px;font-weight:400;color:var(--text-muted)">EVO Max 4T/N</span></h2>
+3. הכנת השלט הרחוק. 
+התקן את מוטות ההיגוי [1]
 
-      <h3>1. טעינת הסוללה</h3>
-      <ul>
-        <li>לשימוש ראשון, אנא טען והפעל את הסוללה הפנימית של השלט הרחוק.</li>
-      </ul>
+הדלק את השלט הרחוק (1) לחץ במשך 2 שניות -> הדלק את הכלי (2) [1]
 
-      <h3>2. הכנת הכלי</h3>
-      <ul>
-        <li>לחצו לחיצה ממושכת על החריץ כדי להסיר את כיסוי הגימבל</li>
-        <li>הכנס את הסוללה לתוך הכלי</li>
-        <li><strong>ודא טעינה מלאה והכנסה עד הסוף</strong></li>
-      </ul>
+הפעל את המנועים (ידני) L R או L R [1]
 
-      <div class="card tip-card">
-        <div class="card-title">✅ פתיחת זרועות</div>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;">פרשו את הזרועות לפי הסדר.<br><strong>יש לוודא פתיחת זרועות מלאה עד קצה מהלך</strong><br>(בחלק מהדגמים יש לוודא נעילת קליפסים) ותקינות פרופלורים.</p>
-      </div>
+5. שלב המראה 
+לחיצה אחת להמראה אוטומטית [1]
+שימו לב: אנא המריאו בשטח פתוח בחוץ [1]`
+        },
+        'safety': {
+            title: 'הוראות בטיחות',
+            text: `נים י י ו ם שמצ י להפעלת הרחפנ ו כשר ם שהו לי מפעי י ע” צע בו י ת ו ל המערכ כלל תפעו .1 במסמך. [6]
+500 מעפ”ש. – בצהל רשה המו בה ההטסה ו ג מעל הרחפן את ס להטי ן אי .2 [6]
+ם בשטח. בי הנת” לכלל הרחפן ן י ב ת חו בטי מרחק 3 מטר על ת לפחו ר לשמו ש י .3 [6]
+ר. י ו באו / על הקרקע ת כל שתי מערכו ן י ב מטר 50 ת לפחו מרחק של על ד להקפי ש י .4 [6]
+תה. נחי / בהמראה 8 מטר מרחק של על ר לשמו ש י ATT I במצב סה בטי .5 [6]
 
-      <h3>3. הכנת השלט הרחוק</h3>
-      <ul>
-        <li>התקן את מוטות ההיגוי</li>
-        <li>פתח את האנטנה</li>
-      </ul>
+ם. ו פג ר ו פל פרו עם ס לטו ן אי .6 [7]
+. ן עי קשר ו ללא השגחה הרחפן את ר להשאי ן אי .7 [7]
+ת. רו או ק י להדל ש י על הקרקע הרחפן כאשר , שך בחו ן מו באי .8 [7]
+. מבצעי ן ו כר י ז ס כרטי עם רחפן ס להטי ן אי .9 [7]
+. ח. פתו רחפן קן י פל ר להשאי ן אי .10 [7]
+. ( חצי ו ם י דה שעתי עבו מן ז ) ללה. סו עד 15% של”ט בי להשתמש ש י .11 [7]
+. ת) דקו 20 ו דה שעה עבו מן ז ) ף ההטסה. בסו עד 20% על הקרקע ה הי י רחפן .12 [7]
+ת. שרו מי ת ו להי תה נחי / דת ההמראה נקו על .13 [7]
+בה. ו בג ו בקרקע ם לי מכשו ללא ת ו להי תה נחי / דת ההמראה נקו על .14 [7]
+ה בשני 20 מטר בהמראה ה י בשנ 15 מטר – ם י י נ צו קי ח רו בתנאי במצבי ס להטי ן אי .15 [7]
 
-      <h3>4. הכנה להטסה</h3>
-      <ul>
-        <li>הדלק את הכלי: לחץ במשך 2 שניות</li>
-        <li>הדלק את השלט הרחוק: לחץ במשך 2 שניות</li>
-      </ul>
+ד. תמי ה י בשנ 11 מטר ATTI ההגבלה במצב תה. בנחי כבד. בגשם ס להטי ן אי .16 [8]
+מלא. י ל י סטר ע שטח לקבו ש י – ם אנשי בקרבת ס להטי ן אי .17 [8]
+ומת די חשמל עמו ת, ו אנטנ : ן ו ג כ ם י מגנטי אלקטרו ת או שדו ם י רנ קו ם ק מאלמנטי להרחי ש י .18 [8]
+ם. לי גדו פי מתכת ו ג ם, רכבי ה, גבו ברכב. רחפן ו ת ללו סו לאחסן ן אי .19 [8]
+הכנסתה. י לפנ ללה סו ת ו נ תקי דא ו ו ל ש י .20 [8]
+ק”מ 4 – י מל סה המקסי הטי חי ו מטו לצאת ן אי .21 [8]
+י הטסה. לפנ ף הסו עד ת ו ברג מו ו ת חו פתו ת ו י האנטנ כ דא ו ו ל ש י .22 [8]
+ם מהשלט. קי את הסטי לפרק ן אי .23 [8]
 
-      <h3>5. שלב המראה</h3>
-      <ul>
-        <li>לחיצה אחת להמראה אוטומטית</li>
-        <li><span class="highlight-danger">⚠ שימו לב: אנא המראו בשטח פתוח</span></li>
-        <li>הפעל את המנועים (ידני)</li>
-      </ul>
+ת רו מקו ד רמ” סמך- המו רם ו הג י ע” ו שר ת שאו ללו סו י מטענ ו ת ללו בסו להשתמש ש י .24 [9]
+ל. בחט” ה י אנרג 
+ת. בו מרטי ת ללו הסו על ד להקפי ש י .25 [9]
+די של המערכת. עו י הי ז ך המאר בתו רק ו אך יעשה י ת ללו סו ע ו נ שי .26 [9]
+ם ן אמצעי י כ מו סי ם, י רחפנ אחזקת ו ל לתפעו ר ת מקטנא” ראו להו ל בהתאם לפעו ש י .27 [9]
+.0015 כ- / ם חדי ו מי [9]`
+        },
+        'security': {
+            title: 'הוראות ביטחון מידע',
+            text: `: ע ד י מ ן ו ח ט י ב ת ו א ר ו ה : [9]
+. רחי אז ברחפן ש מו שי ר סו אי חל בלבד, צבאי רכש דרך נרכש ברחפן אשר ש מו שי יעשה ת. רחי אז הרס רת י ז במסגרת רק ו אך צע בו י ברחפן ש מו השי [9]
 
-      <div class="card info-card">
-        <div class="card-title">📍 מצב הג'ויסטיקים</div>
-        <p style="font-size:14px;color:var(--text-muted);margin-bottom:8px;"><strong>חוט היגוי שמאלי:</strong></p>
-        <ul>
-          <li>עלייה בגובה</li>
-          <li>הנמכה</li>
-          <li>סיבוב שמאלה</li>
-          <li>סיבוב ימינה</li>
-        </ul>
-        <p style="font-size:14px;color:var(--text-muted);margin:8px 0;"><strong>חוט היגוי ימני:</strong></p>
-        <ul>
-          <li>לנוע קדימה –</li>
-          <li>לנוע אחורה –</li>
-          <li>לנוע שמאלה –</li>
-          <li>לנוע ימינה –</li>
-        </ul>
-      </div>
-    `
-  },
+. ד) עו ו ס מ” חו י אתר ם, י צבאי ת ו מחנ סד, מו , כ (שב” ם. י י ם אסטרטג באתרי ם י ברחפנ ש מו שי לבצע ן אי . י ד קו הפי דע המי ן טחו בי ל לחמ” י ד י במי ח ו ו לד ש י רחפן לת נפי במקרה של [10]
+ת. דמו קו ת ו צבאי ת ו י ו ל מפעי נקי ו חדש ה הי י ן ו ר כ י הז ס כרטי דע. המי ג ו ו לסי למחשב בהתאם ה הי י ן ו ר כ י הז ס כרטי קת פרי [10]
 
-  safety: {
-    icon: '⚠️',
-    iconBg: 'rgba(248,81,73,0.15)',
-    title: 'הוראות בטיחות',
-    html: `
-      <h2>הוראות בטיחות</h2>
-      <ol>
-        <li>כלל תפעול המערכות יבוצע ע"י מפעילים שהוכשרו להפעלת הרחפנים שמצויינים במסמך.</li>
-        <li>אין להטיס את הרחפן מעל גובה ההטסה המורשה בצהל – 500 מעפ"ש.</li>
-        <li>יש לשמור לפחות על 3 מטר מרחק בטיחות בין הרחפן לכלל הנת"בים בשטח.</li>
-        <li>יש להקפיד על מרחק של לפחות 50 מטר בין כל שתי מערכות על הקרקע / באוויר.</li>
-        <li>בטיסה במצב ATTI יש לשמור על מרחק של 8 מטר בהמראה / נחיתה.</li>
-        <li>אין לטוס עם פרופלור פגום.</li>
-        <li>אין להשאיר את הרחפן ללא השגחה וקשר עין.</li>
-        <li>באימון בחושך, כאשר הרחפן על הקרקע יש להדליק אורות.</li>
-        <li>אין להטיס רחפן עם כרטיס זיכרון מבצעי.</li>
-        <li>אין להשאיר פליקן רחפן פתוח.</li>
-        <li>יש להשתמש בישל"ט עד 15% סוללה. (זמן עבודה שעתיים וחצי).</li>
-        <li>רחפן יהיה על הקרקע עד 20% בסוף ההטסה. (זמן עבודה שעה ו20 דקות).</li>
-        <li>על נקודת ההמראה / נחיתה להיות מישרות.</li>
-        <li>על נקודת ההמראה / נחיתה להיות ללא מכשולים בקרקע ובגובה.</li>
-        <li>אין להטיס במצבי בתנאי רוח קיצוניים – 15 מטר בשנייה בהמראה 20 מטר בשנייה בנחיתה. במצב ATTI ההגבלה 11 מטר בשנייה תמיד.</li>
-        <li>אין להטיס בגשם כבד.</li>
-        <li>אין להטיס בקרבת אנשים – יש לקבוע שטח סטרילי מלא.</li>
-        <li>יש להרחיק מאלמנטים קורנים או שדות אלקטרומגנטיים כגון: אנטנות, עמודי חשמל ומת גבוה, רכבים, גופי מתכת גדולים.</li>
-        <li>אין לאחסן סוללות ורחפן ברכב.</li>
-        <li>יש לוודא תקינות סוללה לפני הכנסתה.</li>
-        <li>אין לצאת מטווחי הטיסה המקסימלי – 4 ק"מ</li>
-        <li>יש לוודא כי האנטנות פתוחות ומוברגות עד הסוף לפני הטסה.</li>
-        <li>אין לפרק את הסטיקים מהשלט.</li>
-        <li>יש להשתמש בסוללות ומטעני סוללות שאושרו ע"י הגורם המוסמך - רמ"ד מקורות אנרגיה בחט"ל.</li>
-        <li>יש להקפיד על הסוללות מרטיבות.</li>
-        <li>שינוע הסוללות ייעשה אך ורק בתוך המארז הייעודי של המערכת.</li>
-        <li>יש לפעול בהתאם להוראות מקטנא"ר לתפעול ואחזקת רחפנים, סימוכין אמצעים מיוחדים / כ- .0015</li>
-      </ol>
-    `
-  },
+דרום: 08-6502338 יב"א 04-6926207 : ן יב"א צפו [10]
+073-3482026 : ( ן ו (לבנ ן מב"א צפו 08-9115730 : (עזה) דרום מב"א [10]
+תשלס פד"ם: 073-3482029 02-5305102 : תשלס פצ"ן [10]
+03-6067970 : תשלס פקמ"ז [10]`
+        },
+        'appendices': {
+            title: 'נספחים',
+            text: `נים - ערכת EVOספר טלפו ד ו צי רשימת 
+מארז קשיח רחפן שלט 
+2 סטיקים פרופלורים 
+סוללות 4 רב ערוצי מטען 
+יח רמקול פנס גימבל מגן [11]
 
-  security: {
-    icon: '🔒',
-    iconBg: 'rgba(232,160,32,0.15)',
-    title: 'הוראות ביטחון מידע',
-    html: `
-      <h2>הוראות ביטחון מידע</h2>
-      <ul>
-        <li>יעשה שימוש ברחפן אשר נרכש דרך רכש צבאי בלבד, <span class="highlight-danger">חל איסור שימוש ברחפן אזרחי</span>.</li>
-        <li>השימוש ברחפן יבוצע אך ורק במסגרת זירת הרס אזרחית.</li>
-        <li>אין לבצע שימוש ברחפנים באתרים אסטרטגיים. (שב"כ, מוסד, מחנות צבאיים, אתרי חומ"ס ועוד).</li>
-        <li>במקרה של נפילת רחפן יש לדווח במיידי לחמ"ל ביטחון המידע הפיקודי.</li>
-        <li>כרטיס הזיכרון יהיה חדש ונקי מפעילויות צבאיות קודמות.</li>
-        <li>פריקת כרטיס הזיכרון יהיה למחשב בהתאם לסיווג המידע.</li>
-      </ul>
-    `
-  },
+ם: יבשי י טיסה נ נתו . סה במתאר מבצעי טי ת דקו ה: עד 35 י מן שהי ז 
+. ה) י י (20 מטר/שנ ת: 72 קמ"ש ת מרבי רו מהי . ה) י י (17-20 מטר/שנ ר פו בו לם בסו 8 דרגה ח: עד לרו ת ד ו עמי [11]
 
-  appendix: {
-    icon: '📋',
-    iconBg: 'rgba(188,140,255,0.15)',
-    title: 'נספחים',
-    html: `
-      <h2>נספחים</h2>
+ם. הי י פנ 7 מטר מעל מלי של 000, סה מקסי טי בה גו ת: תקרה מבצעי [11]
 
-      <h3>ספר טלפונים</h3>
-      <div class="card">
-        <div class="phone-item"><span class="label">יב"א דרום</span><span class="number">08-6502338</span></div>
-        <div class="phone-item"><span class="label">יב"א צפון</span><span class="number">04-6926207</span></div>
-        <div class="phone-item"><span class="label">מב"א צפון (לבנון)</span><span class="number">073-3482026</span></div>
-        <div class="phone-item"><span class="label">מב"א דרום (עזה)</span><span class="number">08-9115730</span></div>
-        <div class="phone-item"><span class="label">תשלס פד"מ</span><span class="number">073-3482029</span></div>
-        <div class="phone-item"><span class="label">תשלס פצ"ן</span><span class="number">02-5305102</span></div>
-        <div class="phone-item" style="border:none;"><span class="label">תשלס פקמ"ז</span><span class="number">03-6067970</span></div>
-      </div>
+לות: כו י . נד לטרסאו או י שנ י חי ב-2 ם בי ו ם המג י י לר קו ו נ בי ה י ראי י שנ י חי לרחפן מערך : י מרחבי סו כי [11]
 
-      <div class="card warn-card">
-        <div class="card-title">⚠️ תיאום רשות מקומית</div>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;">יש לתאם כל הרמת רחפן גם מול רשות מקומית:<br><strong>בארץ</strong> – לחפש גורם משטרה באתר ההרס ולתאם מולו הרמת רחפן. אי תיאום יכול להוביל ליירוט הרחפן</p>
-      </div>
+ם. ס של עד 30 מטרי ו ברדי י הכל בת סבי מן אמת של בז ת ת מפה תלת-ממדי י י בנ ם: לי י מכשו פו מי [11]`
+        },
+        'troubleshooting': {
+            title: 'סד״פ תקלות',
+            text: `נתק תקשורת: מצב: 
+טה. קלי ת ל0% די י מי או מן ז רך לאו רדת ו י לרחפן ן השלט בי רדת ו י או לה רת שעו ת התקשו כמו [12]
 
-      <h3>רשימת ציוד - ערכת EVO</h3>
-      <div class="equipment-grid">
-        <div class="equip-item">מארז קשיח</div>
-        <div class="equip-item">רחפן</div>
-        <div class="equip-item">שלט</div>
-        <div class="equip-item">2 סטיקים</div>
-        <div class="equip-item">פרופלורים</div>
-        <div class="equip-item">4 סוללות</div>
-        <div class="equip-item">מטען רב ערוצי</div>
-        <div class="equip-item">יח רמקול פנס</div>
-        <div class="equip-item">מגן גימבל</div>
-      </div>
+דרכי מניעה: בה מתאים לגו בעזרת הרמה רת עם הרחפן ר התקשו פו ובמהלך הטסה, שי י לפנ 900WIFI/ בתשל"ס שי בו קת שי בדי רה, לגז קליטה בהגעה ח ו טו קת בדי 
+ת. תי כו אי רה בצו ת אנטנו ר בו חי ו [12]
 
-      <h3>נתוני טיסה יבשים</h3>
-      <div class="card">
-        <div class="spec-row">
-          <span class="spec-label">זמן שהייה</span>
-          <span class="spec-value">עד 35 דקות</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-label">מהירות מרבית</span>
-          <span class="spec-value">72 קמ"ש (20 מ'/שנ')</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-label">עמידות לרוח</span>
-          <span class="spec-value">דרגה 8 בופור (17–20 מ'/שנ')</span>
-        </div>
-        <div class="spec-row" style="border:none;">
-          <span class="spec-label">תקרה מבצעית</span>
-          <span class="spec-value">7,000 מטר מעל פני הים</span>
-        </div>
-      </div>
+ם: ך מזהי אי . ם מהרחפן ני נתו סר קבלת חו ל,0% דה של מד הקליטה בשלט רי י [12]
 
-      <h3>יכולות</h3>
-      <div class="card info-card">
-        <div class="card-title">👁️ כיסוי מרחבי</div>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;">לרחפן מערך חיישני ראייה בינוקולריים המגובים ב-2 חיישני אולטרסאונד.</p>
-      </div>
-      <div class="card info-card">
-        <div class="card-title">🗺️ מיפוי מכשולים</div>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;">בניית מפה תלת-ממדית בזמן אמת של סביבת הכלי ברדיוס של עד 30 מטרים.</p>
-      </div>
-    `
-  },
+ס: תגובת המטי ת. אוטמטי לחזרת הרחפן חצי ו כדקה ם רת מחכי בנתק תקשו תה) (חזרה הבי RTLל גדר הו אם הרחפן 
+. ן הרחפן ו ו י לכ ו ה גבו ם למקו ם לי עו ו ת שעל השלט) (האנטנו ת ו י מנ או ת אנטנו ם ת מחברי ו י נ צו חי ת אנטנו ם זרת מנתקי חו לא טה אם הקלי בחזרה. טה לקבל שלי ת לנסו כדי ( טי קרי ,PANIC) לרחפן ת דו פקו ח ת לשלו לנסו ך צרי זרת חו לא טה אם הקלי [12]
 
-  fault: {
-    icon: '⚡',
-    iconBg: 'rgba(240,192,96,0.15)',
-    title: 'סד״פ תקלות',
-    html: `
-      <h2>סד"פ תקלות</h2>
+ח מחדש. לפתו ו ה קצי ר את האפלי ו לסג ן צו קי זרת במקרה חו לא טה אם הקלי [13]
 
-      <h3>נתק תקשורת</h3>
-      <div class="card">
-        <div class="card-title" style="color:var(--text-muted);">מצב</div>
-        <p style="font-size:14px;color:var(--text-muted);">כמות התקשורת שעולה או יורדת בין השלט לרחפן יורדת לאורך זמן או מיידית ל-0% קליטה.</p>
-      </div>
-      <h3>דרכי מניעה</h3>
-      <ul>
-        <li>בדיקת טווח קליטה בהגעה לגזרה, בדיקת שיבושי WIFI/900 בתשל"ס לפני ובמהלך הטסה, שיפור התקשורת עם הרחפן בעזרת הרמה לגובה מתאים וחיבור אנטנות בצורה איכותית.</li>
-      </ul>
-      <h3>איך מזהים</h3>
-      <ul>
-        <li>ירידה של מד הקליטה בשלט ל-0%, חוסר קבלת נתונים מהרחפן.</li>
-      </ul>
-      <h3>תגובת המטיס</h3>
-      <ul>
-        <li>אם הרחפן הוגדר ל-RTL (חזרה הביתה) בנתק תקשורת מחכים כדקה וחצי לחזרת הרחפן אוטמטית.</li>
-        <li>אם הקליטה לא חוזרת מנתקים אנטנות חיצוניות מחברים אנטנות אומניות (האנטנות שעל השלט) ועולים למקום גבוה ולכיוון הרחפן.</li>
-        <li>אם הקליטה לא חוזרת צריך לנסות לשלוח פקודות לרחפן (PANIC, קריטי) כדי לנסות לקבל שליטה בחזרה.</li>
-        <li>אם הקליטה לא חוזרת במקרה קיצון לסגור את האפליקציה ולפתוח מחדש.</li>
-      </ul>
-      <h3>תחקור ומציאת רחפן</h3>
-      <ul>
-        <li>אם סופית הרחפן לא חזר, יש לפתוח "מצא את הרחפן" ולדקור איפה בדיוק נחת הרחפן. להיכנס ללוגים ולנסות להבין מה גרם לרחפן ליפול\להיסחף (סוללה, gnss, תקלה טכנית וכו')</li>
-      </ul>
-      <div class="card warn-card">
-        <div class="card-title">⚠️ חשוב לזכור</div>
-        <p style="font-size:14px;color:var(--text-muted);margin-bottom:6px;"><strong>נתק תקשורת יכול לגרום ממגוון משפיעים או מזיהוי מאוחר של זיוף GPS.</strong></p>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;">אין להפסיק לנסות להתחבר מחדש לרחפן עד סוף זמן הסוללה.</p>
-      </div>
+: ומציאת רחפן ר תחקו ל\להיסחף פו לי לרחפן גרם ן מה להבי ת לנסו ו ם י ג ללו כנס להי . נחת הרחפן ק ו בדי פה אי ר לדקו ו " "מצא את הרחפן ח לפתו ש י , ר חז לא ת הרחפן פי סו אם 
+( ' ו כ ו ת י טכנ gnss, תקלה ללה, סו ) [13]
 
-      <div class="divider"></div>
+.GPS וף י ז י מאוחר של יהו או מז ן משפיעים ו לגרום ממגו ל כו י ר: נתק תקשורת לזכו ב חשו זמן הסוללה. סוף לנסות להתחבר מחדש לרחפן עד ן להפסיק אי [13]
 
-      <h3>GPS SPOOFING זיוף</h3>
-      <div class="card">
-        <div class="card-title" style="color:var(--text-muted);">מצב</div>
-        <p style="font-size:14px;color:var(--text-muted);">רחפן נסחף ומנסה להתרסק כתוצאה מזיוף מיקום שגוי שחזק יותר מהמיקום מבוסס הלוויינים של הרחפן.</p>
-      </div>
-      <h3>דרכי מניעה</h3>
-      <ul>
-        <li>הטסה על עיגון ויזואלי, בדיקת שיבושי\חסימות GPS בתשל"ס לפני ובמהלך הטסה, יציאה מ-GNSS ברגע שיורדת דראסטית כמות הלוויינים.</li>
-      </ul>
-      <h3>איך מזהים</h3>
-      <ul>
-        <li>רחפן מתחיל להסחף במהירות, ירידה בגובה לא רצויה, מרחק לא סביר מהבית, כמות לוויינים נמוכה (13-17) והטיה חזקה של הגימבל.</li>
-      </ul>
-      <h3>תגובת המטיס</h3>
-      <ul>
-        <li><strong>כיבוי GNSS וחזרה הביתה ב-ATTI או עיגון ויזואלי</strong></li>
-        <li>אם הרחפן ממשיך להסחף העברת הרחפן מיידית למצב קריטי, חזרה הביתה והנחתה בקשר עין ובמיומנות גבוהה מהרגיל.</li>
-        <li>אם הרחפן כבר עבר לנתק תקשורת אחרי זיוף GNSS רוב הסיכויים שהוא התרסק.</li>
-      </ul>
-      <h3>תחקור ומציאת הרחפן</h3>
-      <ul>
-        <li>מכיוון שהרחפן עבר זיוף GPS אין איך למצוא אותו לפי המיקום האחרון שלו, ולכן יש לנסות לנתח לפי המיקום האחרון שאנחנו זוכרים שהיינו איתו, 30 השניות האחרונות שמראות את כיוון ההסחפות, ותחקור הלוגים להבנה איפה הרחפן נפל.</li>
-      </ul>
-      <div class="card warn-card">
-        <div class="card-title">⚠️ חשוב לזכור</div>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;"><strong>זמן התגובה למקרה של זיוף GPS הוא שניות בודדות, יש לנסות בכל דרך להמנע מכניסה למצב.</strong></p>
-      </div>
+:GPS SPOOFING וף י ז מצב: 
+. ם של הרחפן ני י ו ו הל סס ם מבו קו תר מהמי ו י ק י שחז ו ם שג קו מי ף ו י מז צאה כתו ומנסה להתרסק נסחף רחפן [13]
 
-      <div class="divider"></div>
+דרכי מניעה: ם. י נ י ו ו הל ת כמו ת דראסטי רדת ו שי ברגע GNSSאה מ צי י ובמהלך הטסה, י לפנ מותGPS בתשל"ס \חסי שי בו קת שי בדי , י אל ו ז י ו ן ו ג עי על הטסה [14]
 
-      <h3>קפיאה / איבוד וידאו</h3>
-      <div class="card">
-        <div class="card-title" style="color:var(--text-muted);">מצב</div>
-        <p style="font-size:14px;color:var(--text-muted);">הרחפן לא מעביר וידאו לרחפן או שהשלט אינו מעבד את הוידאו המתקבל</p>
-      </div>
-      <h3>דרכי מניעה</h3>
-      <ul>
-        <li>בדיקת תקינות לרחפן לפני הטסה, מעקב אחרי עדכוני חומרה ותוכנה, ניקוי מטמון תקופתי לאפליקציה, שמירה על חום שלט תקין באמצעות ניקוי פתחי איורור וקירור במהלך הטיסה.</li>
-      </ul>
-      <h3>איך מזהים</h3>
-      <ul>
-        <li>הוידאו מהרחפן הופך להיות אפור או תקוע על תמונה, הטלמטריה עדיין זזה.</li>
-      </ul>
-      <h3>תגובת המטיס</h3>
-      <ul>
-        <li>מעבר בין מצלמות יום\לילה\תרמי</li>
-        <li>הזזת זום במצלמת היום וניסיון למעבר לעדשת זום\רחבה.</li>
-        <li>אם הוידאו עדיין תקוע חזרה לפי טלמטריה עד לנקודת הנחיתה, נחיתה בקשר עין,</li>
-        <li>אם יש צורך והמקום מאפשר מבצעית יציאה ממצב חשאי לזיהוי טוב יותר של הרחפן.</li>
-      </ul>
-      <div class="card tip-card">
-        <div class="card-title">💡 חשוב לזכור</div>
-        <p style="font-size:14px;color:var(--text-muted);margin:0;">המצב הנ"ל רלוונטי רק שהטלמטריה עובדת, אם הטלמטריה אינה עובדת מדובר במצב נתק תקשורת.</p>
-      </div>
+מבל. הגי חזקה של ה והטי (13-17) כה נמו ם ני י ו ו ל ת כמו ת, ר מהבי סבי לא ה, מרחק י רצו לא בה בגו דה רי י ת, רו ל להסחף במהי רחפן מתחי ם: ך מזהי אי [14]
 
-      <div class="divider"></div>
+תגובת המטיס: ואלי ז י ו ן ו ג עי או ATTIב וחזרה הביתה GNSS י בו כי 
+ל. גבוהה מהרגי ומנות ובמי ן עי והנחתה בקשר , חזרה הביתה טי דית למצב קרי י מי ך להסחף העברת הרחפן אם הרחפן ממשי ים שהוא התרסק. י כו רוב הסי GNSS וף י ז כבר עבר לנתק תקשורת אחרי אם הרחפן [14]
 
-      <h3>תקלות נוספות</h3>
+: ומציאת הרחפן ר תחקו 30 , תו אי ו נ י ם שהי כרי ו ז ו ן שאנחנ ו ם האחר קו לפי המי לנתח ת לנסו ש י ן לכ ו , ו ן של ו ם האחר קו לפי המי תו או א למצו ך אי ן אי GPS ף ו י ז ן שהרחפן עבר ו ו י מכ [15]
 
-      <div class="card">
-        <div class="card-title">כניסה פתאומית למצב ATTI</div>
-        <ul>
-          <li>הרחפן ייכנס אוטומטית למצב זה כאשר לא יהיה GNSS וכשעיגון תרמי/ויזואלי לא יעבוד.</li>
-          <li>יש לוודא שכפתורי TPS ו- VPS דולקים.</li>
-          <li>במידה והרחפן עבר למצב זה, מומלץ להיכנס להגדרות-> טיסה -> התנהגות טיסה: "רגוע".</li>
-        </ul>
-      </div>
+ת ו ל ק ת ”פ ד ס 
+גם מול רשות מקומית: כל הרמת רחפן יש לתאם לו הרמת מו לתאם ו רם משטרה באתר ההרס גו – לחפש בארץ [15]
 
-      <div class="card">
-        <div class="card-title">התחממות מטע"ד</div>
-        <ul>
-          <li>במידה ואנחנו רואים פיקסלים שחורים/ שרופים על גבי המסך, יש להיכנס להגדרות -> וידאו -> כיול FCC.</li>
-        </ul>
-      </div>
+ט הרחפן רו י י ל ל בי להו ל כו י ם או תי אי . רחפן 
+דאו המתקבל י הו ו מעבד את נ אי או שהשלט לרחפן דאו י ו ר לא מעבי הרחפן [15]
 
-      <div class="card">
-        <div class="card-title">תקלת וידאו</div>
-        <ul>
-          <li>יש לבצע כיול גימבל: הגדרות 9 נקודות-->אחזקה-->כיולים–>כיול גימבל.</li>
-        </ul>
-      </div>
+דרכי מניעה: ה, קצי לאפלי פתי ן תקו י מטמו קו י נ כנה, תו ו מרה חו י נ ו י הטסה, מעקב אחרי עדכ לפנ לרחפן ת נו קת תקי בדי [15]
 
-      <div class="card">
-        <div class="card-title">תקלת תקשורת</div>
-        <ul>
-          <li>במידה ויש אחוזי RC ירודים ורואים בעיות בתקשורת עם הרחפן, יש להביא אותו לנחיתה.</li>
-        </ul>
-      </div>
-    `
-  }
-};
+סה. ר במהלך הטי רו קי ו ר רו ו אי י פתחי קו י נ ת ן באמצעו ם שלט תקי חו רה על שמי [16]
 
-function showPage(key) {
-  const page = pages[key];
-  if (!page) return;
+ם: ך מזהי אי ה. ז ז ן י י עד ה נה, הטלמטרי ע על תמו או תקו ר אפו ת ו להי פך הו דאו מהרחפן י הו [16]
 
-  document.getElementById('header-title').textContent = page.title;
+ס: תגובת המטי לה\תרמי ם\לי ו י ת ן מצלמו בי מעבר 
+ם\רחבה. ו ז ן למעבר לעדשת ו סי י נ ו ם ו הי ם במצלמת ו ז ת ז הז , ן עי נחיתה בקשר תה, דת הנחי לנקו ה עד לפי טלמטרי רה חז ע ן תקו י י עד דאו י הו אם 
+. תר של הרחפן ו י ב טו י הו י לז אה ממצב חשאי צי י ת ם מאפשר מבצעי והמקו רך צו ש י אם [16]
 
-  const iconEl = document.getElementById('header-icon');
-  iconEl.textContent = page.icon;
-  iconEl.style.background = page.iconBg;
+נה עובדת מדובר במצב נתק תקשורת. אי נטי רק שהטלמטריה עובדת, אם הטלמטריה ו רלו ר: המצב הנ"ל לזכו ב חשו [16]
 
-  document.getElementById('content-body').innerHTML = page.html;
+נוספות: תקלות :ATTI כניסה פתאומית למצב 
+. ד עבו י לא י אל ו ז י ו / ן תרמי ו ג כשעי ו GNSS ה הי י לא כאשר זה למצב ת טומטי או כנס י י הרחפן ם. לקי דו VPS - ו TPS רי דא שכפתו ו ו ל ש י . ע" "רגו סה: טי ת -> התנהגו סה טי ת-> להגדרו כנס להי מלץ מו ה, ז למצב והרחפן עבר דה במי [17]
 
-  document.getElementById('home').classList.remove('active');
-  const contentEl = document.getElementById('content');
-  contentEl.classList.add('active');
-  contentEl.scrollTop = 0;
+התחממות מטע"ד . FCC ל ו י כ < - דאו י ו < - ת להגדרו כנס להי ש י , גבי המסך על ם פי ם/ שרו רי ם שחו קסלי פי ם אי רו ו אנחנ ו דה במי [17]
 
-  // reset animation
-  contentEl.style.animation = 'none';
-  requestAnimationFrame(() => {
-    contentEl.style.animation = 'slideIn 0.25s ease forwards';
-  });
-}
+ידאו ו תקלת . מבל גי ל ו י ם–>כ לי ו י ->כ ->אחזקה- ת- דו נקו 9 ת מבל: הגדרו גי ל ו י כ לבצע ש י [17]
 
-function goHome() {
-  document.getElementById('content').classList.remove('active');
-  document.getElementById('home').classList.add('active');
-  window.scrollTo(0, 0);
-}
+תקלת תקשורת תה. לנחי תו או א להבי ש י , רת עם הרחפן ת בתקשו ו בעי ם אי רו ו ם די רו י RC י ז אחו ש י ו דה במי [18]`
+        }
+    };
+
+    function showCategory(key) {
+        const data = contentData[key];
+        document.getElementById('category-title').innerText = data.title;
+        document.getElementById('category-content').innerText = data.text;
+        
+        document.getElementById('home-screen').style.display = 'none';
+        document.getElementById('detail-screen').style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+
+    function showHome() {
+        document.getElementById('home-screen').style.display = 'block';
+        document.getElementById('detail-screen').style.display = 'none';
+        window.scrollTo(0, 0);
+    }
 </script>
+
 </body>
 </html>
